@@ -1,7 +1,6 @@
 import { Connector } from '@web3-react/types';
 import { assert } from 'ts-essentials';
 import { AVAILABLE_CONNECTIONS, CONNECTIONS } from './connections';
-
 import { Connection, ConnectionType } from './types';
 
 export function getAvailableConnection(c: Connector | ConnectionType): Connection | undefined {
