@@ -6,12 +6,12 @@ import { useAppDispatch } from '~/store/hooks';
 export const ConnectWalletButton = (): JSX.Element => {
   const dispatch = useAppDispatch();
 
-  const connectWallet = useCallback((): void => {
+  const onConnectWalletClick = useCallback((): void => {
     dispatch(setAppScreen(AppScreen.CHOOSE_WALLET));
   }, [dispatch]);
 
   return (
-    <Button variant={'contained'} onClick={connectWallet}>
+    <Button variant={'contained'} onClick={onConnectWalletClick}>
       {'connect wallet'}
     </Button>
   );

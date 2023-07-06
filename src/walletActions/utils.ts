@@ -3,7 +3,7 @@ import { assert } from 'ts-essentials';
 import { AVAILABLE_CONNECTIONS, CONNECTIONS } from './connections';
 import { Connection, ConnectionType } from './types';
 
-export function getAvailableConnection(c: Connector | ConnectionType): Connection | undefined {
+export function getAvailableConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
     const currentActiveConnection = AVAILABLE_CONNECTIONS.find((connection) => connection.connector === c);
     assert(currentActiveConnection, 'current active connection is not defined');
@@ -21,7 +21,7 @@ export function getAvailableConnection(c: Connector | ConnectionType): Connectio
         return CONNECTIONS[ConnectionType.NETWORK];
 
       default:
-        return undefined;
+        throw new Error('connection type is not defined');
     }
   }
 }

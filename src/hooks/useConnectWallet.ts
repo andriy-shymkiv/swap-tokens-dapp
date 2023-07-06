@@ -26,7 +26,7 @@ export const useConnectWallet = (): UseMutationResult<Connector, Error, Connecti
     () => ({
       onSuccess: (connector: Connector): void => {
         const connection = getAvailableConnection(connector);
-        dispatch(setSelectedWallet(connection?.type));
+        dispatch(setSelectedWallet(connection.type));
         dispatch(setAppScreen(AppScreen.SWAP_TOKENS));
       },
       onError: (): void => {
