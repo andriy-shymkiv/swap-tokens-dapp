@@ -6,10 +6,11 @@ module.exports = {
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   plugins: ['react-refresh'],
   rules: {
-    'semi': ['error', 'always'],
     'no-trailing-spaces': 'error',
     'no-multiple-empty-lines': ['error', { max: 1 }],
     'no-duplicate-imports': 'error',
+    'eol-last': ['error', 'always'],
+    'semi': ['error', 'always'],
     'newline-before-return': 'error',
     '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
