@@ -1,10 +1,10 @@
 import { Connector } from '@web3-react/types';
 import { useEffect } from 'react';
-import { networkConnection } from 'src/connection/connectors/network';
-import { Connection } from 'src/connection/types';
-import { getConnection } from 'src/connection/utils';
+import { Connection, ConnectionType } from '~/walletActions/types';
+import { getAvailableConnection } from '~/walletActions/utils';
+import { CONNECTIONS } from '~/walletActions/connections';
 import { setSelectedWallet } from '~/store/appSlice';
-import { useAppSelector, useAppDispatch } from '~/store/hooks';
+import { useAppDispatch, useAppSelector } from '~/store/hooks';
 
 async function connect(connector: Connector): Promise<void> {
   try {
@@ -27,14 +27,14 @@ export default function useEagerlyConnect(): void {
 
   if (selectedWallet) {
     try {
-      selectedConnection = getConnection(selectedWallet);
+      selectedConnection = getAvailableConnection(selectedWallet);
     } catch {
       dispatch(setSelectedWallet(undefined));
     }
   }
 
   useEffect(() => {
-    connect(networkConnection.connector);
+    connect(CONNECTIONS[ConnectionType.NETWORK]?.connector as Connector);
 
     if (selectedConnection) {
       connect(selectedConnection.connector);

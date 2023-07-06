@@ -1,8 +1,8 @@
 import { useMutation, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
 import { Connector } from '@web3-react/types';
 import { useCallback, useMemo } from 'react';
-import { Connection } from '~/connection/types';
-import { getConnection } from '~/connection/utils';
+import { Connection } from '~/walletActions/types';
+import { getAvailableConnection } from '~/walletActions/utils';
 import { setSelectedWallet } from '~/store/appSlice';
 import { useAppDispatch } from '~/store/hooks';
 
@@ -25,7 +25,7 @@ export const useConnectWallet = (): UseMutationResult<Connector, Error, Connecti
   const callbacks: UseConnectWalletCallbacks = useMemo(
     () => ({
       onSuccess: (connector: Connector): void => {
-        const connection = getConnection(connector);
+        const connection = getAvailableConnection(connector);
         dispatch(setSelectedWallet(connection?.type));
       },
       onError: (): void => {

@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
-import { CONNECTIONS } from './connection/utils';
+import { AVAILABLE_CONNECTIONS } from './walletActions/connections';
 import { useConnectWallet } from './hooks/useConnectWallet';
 import { setSelectedWallet } from './store/appSlice';
 import { useAppDispatch } from './store/hooks';
@@ -12,12 +12,9 @@ export const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const handleDisconnect = useCallback(() => {
-    if (connector.deactivate) {
-      connector.deactivate();
-    }
+    if (connector.deactivate) connector.deactivate();
 
     dispatch(setSelectedWallet(undefined));
-
     connector.resetState();
   }, [connector, dispatch]);
 
@@ -25,18 +22,18 @@ export const App = (): JSX.Element => {
     <>
       <Box display={'flex'} flexDirection={'column'} gap={6}>
         {!account ? (
-          CONNECTIONS.map((connection) => (
+          AVAILABLE_CONNECTIONS.map((connection) => (
             <Button variant={'contained'} key={connection.type} onClick={(): void => mutate(connection)}>
               {connection.type}
             </Button>
           ))
         ) : (
-          <>
-            {`Connected to ${connector.provider}`}
+          <Box display={'flex'} alignItems={'center'} flexDirection={'column'} gap={4}>
+            {'Connected'}
             <Button variant={'contained'} onClick={handleDisconnect}>
               {'disconnect'}
             </Button>
-          </>
+          </Box>
         )}
       </Box>
     </>

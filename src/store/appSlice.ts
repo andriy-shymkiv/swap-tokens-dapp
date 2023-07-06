@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ConnectionType } from '../connection/types';
+import { ConnectionType } from '../walletActions/types';
 
 export interface AppState {
   selectedWallet: ConnectionType | undefined;

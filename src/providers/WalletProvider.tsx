@@ -2,7 +2,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 
 import { ReactNode } from 'react';
 import useEagerlyConnect from '~/hooks/useEagerlyConnect';
-import { connectors } from '../connection/connectors';
+import { CONNECTORS } from '../walletActions/connections';
 
 interface WalletProviderProps {
   children: ReactNode;
@@ -11,5 +11,5 @@ interface WalletProviderProps {
 export const WalletProvider = ({ children }: WalletProviderProps): JSX.Element => {
   useEagerlyConnect();
 
-  return <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>;
+  return <Web3ReactProvider connectors={CONNECTORS}>{children}</Web3ReactProvider>;
 };
