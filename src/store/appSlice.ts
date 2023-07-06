@@ -9,7 +9,7 @@ const initialState: AppState = {
   selectedWallet: undefined,
 };
 
-export const paymentSlice = createSlice({
+export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
@@ -19,6 +19,6 @@ export const paymentSlice = createSlice({
   },
 });
 
-export const { setSelectedWallet } = paymentSlice.actions;
+export const { setSelectedWallet } = appSlice.actions;
 
-export default paymentSlice.reducer;
+export default appSlice.reducer;

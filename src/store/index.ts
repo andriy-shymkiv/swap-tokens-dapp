@@ -1,21 +1,36 @@
-import { CombinedState, combineReducers, configureStore, Reducer } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
-import appSlice, { AppState } from './appSlice';
+import { Persistor, persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/es/storage';
+import appSlice from './appSlice';
 
-type RootReducer = Reducer<CombinedState<{ app: AppState }>>;
+const persistConfig = {
+  key: 'root',
+  storage,
+};
 
-const rootReducer: RootReducer = combineReducers({
+const rootReducer = combineReducers({
   app: appSlice,
 });
 
-const setupStore = (): { store: ToolkitStore } => {
-  const store = configureStore({ reducer: rootReducer });
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-  return { store };
+const setupStore = (): { store: ToolkitStore; persistor: Persistor } => {
+  const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
+  });
+  const persistor = persistStore(store);
+
+  return { store, persistor };
 };
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = ReturnType<typeof setupStore>;
 export type AppDispatch = AppStore['store']['dispatch'];
 
-export const { store } = setupStore();
+const { store, persistor } = setupStore();
+export { store, persistor };
