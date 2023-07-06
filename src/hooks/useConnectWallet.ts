@@ -1,10 +1,10 @@
 import { useMutation, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
 import { Connector } from '@web3-react/types';
 import { useCallback, useMemo } from 'react';
+import { AppScreen, setAppScreen, setSelectedWallet } from '~/store/appSlice';
+import { useAppDispatch } from '~/store/hooks';
 import { Connection } from '~/walletActions/types';
 import { getAvailableConnection } from '~/walletActions/utils';
-import { setSelectedWallet } from '~/store/appSlice';
-import { useAppDispatch } from '~/store/hooks';
 
 type UseConnectWalletCallbacks = Pick<
   UseMutationOptions<Connector, Error, Connection>,
@@ -27,6 +27,7 @@ export const useConnectWallet = (): UseMutationResult<Connector, Error, Connecti
       onSuccess: (connector: Connector): void => {
         const connection = getAvailableConnection(connector);
         dispatch(setSelectedWallet(connection?.type));
+        dispatch(setAppScreen(AppScreen.SWAP_TOKENS));
       },
       onError: (): void => {
         console.error('error connecting wallet');
