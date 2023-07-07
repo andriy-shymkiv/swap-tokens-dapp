@@ -1,11 +1,12 @@
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { getEllipsisString } from '~/helpers/utils';
 import { AppScreen, setAppScreen, setSelectedWallet } from '~/store/appSlice';
 import { useAppDispatch } from '~/store/hooks';
+import { PrimaryButton } from './common/PrimaryButton';
 
-export const SwapTokensScreen = (): JSX.Element => {
+export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const { account, connector } = useWeb3React();
   const dispatch = useAppDispatch();
 
@@ -21,9 +22,10 @@ export const SwapTokensScreen = (): JSX.Element => {
     <>
       <Box display={'flex'} alignItems={'center'} flexDirection={'column'} gap={4}>
         {`Account address: ${getEllipsisString(account)}`}
-        <Button variant={'contained'} onClick={handleDisconnect}>
+
+        <PrimaryButton fullWidth variant={'contained'} onClick={handleDisconnect}>
           {'disconnect'}
-        </Button>
+        </PrimaryButton>
       </Box>
     </>
   );
