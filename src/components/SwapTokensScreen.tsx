@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { getEllipsisString } from '~/helpers/utils';
 import { AppScreen, setAppScreen, setSelectedWallet } from '~/store/appSlice';
 import { useAppDispatch } from '~/store/hooks';
+import { AssetInput, AssetInputType } from './common/AssetInput';
 import { PrimaryButton } from './common/PrimaryButton';
 
 export const SwapTokensScreen: React.FC = (): JSX.Element => {
@@ -22,6 +23,9 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
     <>
       <Box display={'flex'} alignItems={'center'} flexDirection={'column'} gap={4}>
         {`Account address: ${getEllipsisString(account)}`}
+
+        <AssetInput type={AssetInputType.PAY} />
+        <AssetInput type={AssetInputType.RECEIVE} />
 
         <PrimaryButton fullWidth variant={'contained'} onClick={handleDisconnect}>
           {'disconnect'}

@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ConnectionType } from '../walletActions/types';
+import { Token } from '~/types/tokens';
+import { USDC_TOKEN } from '~/utils/constants';
+import { CHAINS } from '~/walletActions/chains';
+import { ChainId, ConnectionType } from '../walletActions/types';
 
 export enum AppScreen {
   INITIAL = 'INITIAL',
@@ -10,13 +13,19 @@ export enum AppScreen {
 }
 
 export interface AppState {
+  selectedChainId: ChainId;
   selectedWallet: ConnectionType | undefined;
   screen: AppScreen;
+  youPay: { amount: string; token: Token };
+  youReceive: { amount: string; token: Token };
 }
 
 const initialState: AppState = {
+  selectedChainId: ChainId.MAINNET,
   selectedWallet: undefined,
   screen: AppScreen.INITIAL,
+  youPay: { amount: '', token: CHAINS[ChainId.MAINNET].nativeToken },
+  youReceive: { amount: '', token: USDC_TOKEN[ChainId.MAINNET] },
 };
 
 export const appSlice = createSlice({
