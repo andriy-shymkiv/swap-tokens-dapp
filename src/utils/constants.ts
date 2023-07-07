@@ -1,5 +1,4 @@
 import { Token } from '~/types/tokens';
-import { CHAINS } from '~/walletActions/chains';
 import { ChainId } from '~/walletActions/types';
 
 export const ONE_HOUR = 60 * 60 * 1000;
