@@ -3,6 +3,8 @@ import { ChainId } from '~/walletActions/types';
 
 export const ONE_HOUR = 60 * 60 * 1000;
 
+export const EMPTY_ARRAY = [];
+
 export const UNISWAP_TOKEN_LIST_URL = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
 
 const USDC_TOKEN_LOGO_URL =

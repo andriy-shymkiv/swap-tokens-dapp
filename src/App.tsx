@@ -8,18 +8,15 @@ import { SwapTokensScreen } from './components/SwapTokensScreen';
 import { AppScreen, setAppScreen } from './store/appSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 
-export const StyledCard = styled(Card, {
-  name: 'StyledCard',
+const StyledWidgetWrapper = styled(Card, {
+  name: 'StyledWidgetWrapper',
 })(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: theme.spacing(4),
-  width: 620,
   height: 400,
-  padding: theme.spacing(4),
-  boxShadow: theme.shadows[6],
+  width: 400,
+  padding: theme.spacing(10),
+  boxShadow: theme.shadows[8],
 }));
 
 export const App: React.FC = (): JSX.Element => {
@@ -36,11 +33,13 @@ export const App: React.FC = (): JSX.Element => {
   }, [account, dispatch]);
 
   return (
-    <StyledCard>
+    <StyledWidgetWrapper>
       {screen === AppScreen.INITIAL && <ConnectWalletButton />}
       {screen === AppScreen.CHOOSE_WALLET && <ChooseWalletScreen />}
       {screen === AppScreen.SWAP_TOKENS && <SwapTokensScreen />}
-      {screen === AppScreen.SELECT_YOU_PAY_TOKEN && screen === AppScreen.SELECT_YOU_PAY_TOKEN && <SelectTokenScreen />}
-    </StyledCard>
+      {(screen === AppScreen.SELECT_YOU_PAY_TOKEN || screen === AppScreen.SELECT_YOU_RECEIVE_TOKEN) && (
+        <SelectTokenScreen />
+      )}
+    </StyledWidgetWrapper>
   );
 };

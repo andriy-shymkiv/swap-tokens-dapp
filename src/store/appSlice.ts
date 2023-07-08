@@ -32,15 +32,27 @@ export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
+    setSelectedChainId: (state: AppState, { payload }: { payload: ChainId }) => {
+      state.selectedChainId = payload;
+      state.youPay = { amount: state.youPay.amount, token: CHAINS[payload].nativeToken };
+      state.youReceive = { amount: state.youReceive.amount, token: USDC_TOKEN[payload] };
+    },
     setSelectedWallet: (state: AppState, { payload }: { payload: ConnectionType | undefined }) => {
       state.selectedWallet = payload;
     },
     setAppScreen: (state: AppState, { payload }: { payload: AppScreen }) => {
       state.screen = payload;
     },
+    setYouPayToken: (state: AppState, { payload }: { payload: Token }) => {
+      state.youPay = { amount: state.youPay.amount, token: payload };
+    },
+    setYouReceiveToken: (state: AppState, { payload }: { payload: Token }) => {
+      state.youReceive = { amount: state.youReceive.amount, token: payload };
+    },
   },
 });
 
-export const { setSelectedWallet, setAppScreen } = appSlice.actions;
+export const { setSelectedWallet, setSelectedChainId, setAppScreen, setYouPayToken, setYouReceiveToken } =
+  appSlice.actions;
 
 export default appSlice.reducer;
