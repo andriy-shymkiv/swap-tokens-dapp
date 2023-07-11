@@ -1,7 +1,8 @@
 import { Token } from '~/types/tokens';
 import { ChainId } from '~/walletActions/types';
 
-export const ONE_HOUR = 60 * 60 * 1000;
+export const ONE_MINUTE = 60 * 1000;
+export const ONE_HOUR = ONE_MINUTE * 60;
 
 export const EMPTY_ARRAY = [];
 
@@ -68,3 +69,16 @@ export const USDC_TOKEN: Record<ChainId, Token> = {
     logoURI: USDC_TOKEN_LOGO_URL,
   },
 };
+
+export const MULTI_CALL_ADDRESS: Record<ChainId, string> = {
+  [ChainId.MAINNET]: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
+  [ChainId.BSC]: '0xC50F4c1E81c873B2204D7eFf7069Ffec6Fbe136D',
+  [ChainId.FANTOM]: '0xdC6E2b14260F972ad4e5a31c68294Fba7E720701',
+  [ChainId.AVALANCHE]: '0xd7Fc8aD069f95B6e2835f4DEff03eF84241cF0E1',
+  [ChainId.POLYGON]: '0x275617327c958bD06b5D6b871E7f491D76113dd8',
+  [ChainId.ARBITRUM]: '0x7ecfbaa8742fdf5756dac92fbc8b90a19b8815bf',
+  [ChainId.OPTIMISM]: '0x2DC0E2aa608532Da689e89e237dF582B783E552C',
+};
+
+export const UNLIMITED_ALLOWANCE_IN_BASE_UNITS =
+  '115792089237316195423570985008687907853269984665640564039457584007913129639935';
