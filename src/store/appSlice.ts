@@ -44,10 +44,25 @@ export const appSlice = createSlice({
       state.screen = payload;
     },
     setYouPayToken: (state: AppState, { payload }: { payload: Token }) => {
-      state.youPay = { amount: state.youPay.amount, token: payload };
+      if (payload.address === state.youReceive.token.address) {
+        // swap tokens in place if they are the same
+        const oldYouPayToken = state.youPay.token;
+        state.youPay = { amount: state.youPay.amount, token: state.youReceive.token };
+        state.youReceive = { amount: state.youReceive.amount, token: oldYouPayToken };
+      } else {
+        state.youPay = { amount: state.youPay.amount, token: payload };
+      }
     },
+    // @todo: consider to combine setYouPayToken and setYouReceiveToken into one action, but is it necessary?
     setYouReceiveToken: (state: AppState, { payload }: { payload: Token }) => {
-      state.youReceive = { amount: state.youReceive.amount, token: payload };
+      if (payload.address === state.youPay.token.address) {
+        // swap tokens in place if they are the same
+        const oldYouReceiveToken = state.youReceive.token;
+        state.youReceive = { amount: state.youReceive.amount, token: payload };
+        state.youPay = { amount: state.youPay.amount, token: oldYouReceiveToken };
+      } else {
+        state.youReceive = { amount: state.youReceive.amount, token: payload };
+      }
     },
   },
 });

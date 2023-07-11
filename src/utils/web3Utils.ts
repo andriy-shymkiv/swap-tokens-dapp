@@ -25,7 +25,7 @@ interface InitUtilsResult {
   requestApprove: (library: any, params: RequestApproveParams) => Promise<any>;
 }
 
-// TODO: define types where any is used
+// @todo: define types where any is used
 function web3Utils(rpcMap: Partial<Record<string, string>>): InitUtilsResult {
   const providers = Object.entries(rpcMap).reduce<Record<string, JsonRpcProvider>>(
     (acc, [chainId, url]) => ({ ...acc, [chainId]: new JsonRpcProvider(url) }),
