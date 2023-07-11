@@ -7,7 +7,6 @@ import { SelectTokenScreen } from './components/SelectTokenScreen';
 import { SwapTokensScreen } from './components/SwapTokensScreen';
 import { AppScreen, setAppScreen } from './store/appSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
-import { URLS } from './walletActions/chains';
 
 const StyledWidgetWrapper = styled(Card, {
   name: 'StyledWidgetWrapper',
@@ -24,7 +23,6 @@ export const App: React.FC = (): JSX.Element => {
   const { screen } = useAppSelector(({ app }) => app);
   const { account } = useWeb3React();
   const dispatch = useAppDispatch();
-  console.log(URLS);
 
   useEffect(() => {
     if (account) {

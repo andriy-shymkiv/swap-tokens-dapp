@@ -1,13 +1,12 @@
 import { JsonRpcProvider, Contract } from 'ethers';
 import { Token } from '~/types/tokens';
-import { MulticallResponse } from '../hooks/useTokenAllowance';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { formatUnits } from '@ethersproject/units';
 import erc20Abi from '~/abis/erc20.json';
 import multiCallAbi from '~/abis/multicall.json';
 import { CHAINS } from '~/walletActions/chains';
 import { ChainId } from '~/walletActions/types';
-import { RequestApproveParams } from '~/types/utils';
+import { MulticallResponse, RequestApproveParams } from '~/types/utils';
 import { MULTI_CALL_ADDRESS, UNLIMITED_ALLOWANCE_IN_BASE_UNITS } from './constants';
 
 interface InitUtilsResult {
@@ -135,4 +134,4 @@ const rpcMap = Object.keys(CHAINS).reduce<Record<string, string>>((acc, chain) =
   return acc;
 }, {});
 
-export const { getMultipleAllowances } = web3Utils(rpcMap);
+export const { getMultipleBalances, getMultipleAllowances } = web3Utils(rpcMap);
