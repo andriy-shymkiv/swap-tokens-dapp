@@ -2,9 +2,10 @@ import { Box, Button, styled, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { getEllipsisString } from '~/helpers/utils';
-import { AppScreen, setAppScreen, setSelectedWallet } from '~/store/appSlice';
+import { AppScreen, resetState, setAppScreen, setSelectedWallet } from '~/store/appSlice';
 import { useAppDispatch } from '~/store/hooks';
 import { AssetInput, AssetInputType } from './common/AssetInput';
+import { FlipTokensButton } from './common/FlipTokensButton';
 import { PrimaryButton } from './common/PrimaryButton';
 import { SelectChain } from './SelectChain';
 
@@ -24,6 +25,7 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
 
     dispatch(setAppScreen(AppScreen.INITIAL));
     dispatch(setSelectedWallet(undefined));
+    dispatch(resetState());
     connector.resetState();
   }, [connector, dispatch]);
 
@@ -44,10 +46,9 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
         flexGrow={1}
       >
         <SelectChain />
-
         <AssetInput type={AssetInputType.PAY} />
+        <FlipTokensButton />
         <AssetInput type={AssetInputType.RECEIVE} />
-
         <PrimaryButton fullWidth>{'Swap Tokens'}</PrimaryButton>
       </Box>
     </>

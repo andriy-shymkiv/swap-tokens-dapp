@@ -64,10 +64,23 @@ export const appSlice = createSlice({
         state.youReceive = { amount: state.youReceive.amount, token: payload };
       }
     },
+    flipTokens: (state: AppState) => {
+      const oldYouPay = state.youPay;
+      state.youPay = { amount: state.youReceive.amount, token: state.youReceive.token };
+      state.youReceive = { amount: oldYouPay.amount, token: oldYouPay.token };
+    },
+    resetState: () => initialState,
   },
 });
 
-export const { setSelectedWallet, setSelectedChainId, setAppScreen, setYouPayToken, setYouReceiveToken } =
-  appSlice.actions;
+export const {
+  setSelectedWallet,
+  setSelectedChainId,
+  setAppScreen,
+  setYouPayToken,
+  setYouReceiveToken,
+  flipTokens,
+  resetState,
+} = appSlice.actions;
 
 export default appSlice.reducer;
