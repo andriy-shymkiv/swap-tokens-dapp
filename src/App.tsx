@@ -31,6 +31,7 @@ export const App: React.FC = (): JSX.Element => {
       dispatch(setAppScreen(AppScreen.INITIAL));
     }
   }, [account, dispatch]);
+  //
 
   return (
     <StyledWidgetWrapper>
