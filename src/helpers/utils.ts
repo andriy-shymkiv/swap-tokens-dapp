@@ -18,3 +18,7 @@ export function isNonEmptyArray<A>(arr: Array<A>): arr is NonEmptyArray<A> {
 export function isSupportedChain(chainId: ChainId): chainId is ChainId {
   return !!chainId && !!CHAINS[chainId];
 }
+
+export function isUserRejectedTx(error: unknown): boolean {
+  return (error as Error)?.message.includes('user rejected transaction');
+}
