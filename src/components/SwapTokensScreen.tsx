@@ -36,12 +36,16 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
   }, [connector, dispatch]);
 
   const onClick = useCallback((): void => {
+    if (!isEnoughBalance) {
+      return;
+    }
+
     if (!isEnoughAllowance) {
       requestApprove();
     } else {
       createSwap();
     }
-  }, [createSwap, isEnoughAllowance, requestApprove]);
+  }, [isEnoughAllowance, isEnoughBalance, requestApprove, createSwap]);
 
   return (
     <>
