@@ -10,6 +10,7 @@ import { PrimaryButton } from './common/PrimaryButton';
 import { SelectChain } from './SelectChain';
 import { useSwapCondition } from '~/hooks/useSwapCondition';
 import { useRequestApprove } from '~/hooks/useRequestApprove';
+import { useCreateSwap } from '~/hooks/useCreateSwap';
 
 const StyledDisconnectButton = styled(Button, {
   name: 'StyledDisconnectButton',
@@ -23,6 +24,7 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const { isEnoughBalance, isEnoughAllowance } = useSwapCondition();
   const { mutate: requestApprove } = useRequestApprove();
+  const { mutate: createSwap } = useCreateSwap();
 
   const handleDisconnect = useCallback(() => {
     if (connector.deactivate) connector.deactivate();
@@ -32,6 +34,14 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
     dispatch(resetState());
     connector.resetState();
   }, [connector, dispatch]);
+
+  const onClick = useCallback((): void => {
+    if (!isEnoughAllowance) {
+      requestApprove();
+    } else {
+      createSwap();
+    }
+  }, [createSwap, isEnoughAllowance, requestApprove]);
 
   return (
     <>
@@ -54,11 +64,7 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
         <FlipTokensButton />
         <AssetInput type={AssetInputType.RECEIVE} />
 
-        <PrimaryButton
-          fullWidth
-          disabled={!isEnoughBalance}
-          onClick={() => (!isEnoughAllowance ? requestApprove() : Promise.resolve())}
-        >
+        <PrimaryButton fullWidth disabled={!isEnoughBalance} onClick={onClick}>
           {!isEnoughBalance ? 'insufficient balance' : !isEnoughAllowance ? 'unlock' : 'Swap'}
         </PrimaryButton>
       </Box>
