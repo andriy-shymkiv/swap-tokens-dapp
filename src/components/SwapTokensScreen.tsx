@@ -1,4 +1,4 @@
-import { Box, Button, styled, Typography } from '@mui/material';
+import { Box, Button, styled, Typography, CircularProgress } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { getEllipsisString } from '~/helpers/utils';
@@ -10,6 +10,7 @@ import { PrimaryButton } from './common/PrimaryButton';
 import { SelectChain } from './SelectChain';
 import { useSwapCondition } from '~/hooks/useSwapCondition';
 import { useRequestApprove } from '~/hooks/useRequestApprove';
+import { useCreateSwap } from '~/hooks/useCreateSwap';
 
 const StyledDisconnectButton = styled(Button, {
   name: 'StyledDisconnectButton',
@@ -22,7 +23,8 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const { account, connector } = useWeb3React();
   const dispatch = useAppDispatch();
   const { isEnoughBalance, isEnoughAllowance } = useSwapCondition();
-  const { mutate: requestApprove } = useRequestApprove();
+  const { mutate: requestApprove, isLoading: isRequestApproveLoading } = useRequestApprove();
+  const { mutate: createSwap, isLoading: isCreateSwapLoading } = useCreateSwap();
 
   const handleDisconnect = useCallback(() => {
     if (connector.deactivate) connector.deactivate();
@@ -32,6 +34,22 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
     dispatch(resetState());
     connector.resetState();
   }, [connector, dispatch]);
+
+  const onClick = useCallback((): void => {
+    if (!isEnoughBalance) {
+      return;
+    }
+
+    if (!isEnoughAllowance) {
+      requestApprove();
+    } else {
+      createSwap();
+    }
+  }, [isEnoughAllowance, isEnoughBalance, requestApprove, createSwap]);
+
+  const buttonLabel = !isEnoughBalance ? 'Insufficient balance' : !isEnoughAllowance ? 'Unlock' : 'Swap';
+  const isButtonDisabled = !account || !isEnoughBalance || isRequestApproveLoading || isCreateSwapLoading;
+  const isLoader = isRequestApproveLoading || isCreateSwapLoading;
 
   return (
     <>
@@ -54,12 +72,11 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
         <FlipTokensButton />
         <AssetInput type={AssetInputType.RECEIVE} />
 
-        <PrimaryButton
-          fullWidth
-          disabled={!isEnoughBalance}
-          onClick={() => (!isEnoughAllowance ? requestApprove() : Promise.resolve())}
-        >
-          {!isEnoughBalance ? 'insufficient balance' : !isEnoughAllowance ? 'unlock' : 'Swap'}
+        <PrimaryButton fullWidth disabled={isButtonDisabled} onClick={onClick}>
+          <Box display={'flex'} alignItems={'center'} gap={2}>
+            {buttonLabel}
+            {isLoader && <CircularProgress size={24} color="info" />}
+          </Box>
         </PrimaryButton>
       </Box>
     </>

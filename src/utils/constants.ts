@@ -7,6 +7,9 @@ export const ONE_HOUR = ONE_MINUTE * 60;
 export const EMPTY_ARRAY = [];
 
 export const UNISWAP_TOKEN_LIST_URL = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
+export const PARASWAP_API_URL = 'https://apiv5.paraswap.io';
+export const DEFAULT_SLIPPAGE = 1; // 1%
+export const DEFAULT_PARTNER = 'chucknorris';
 
 const USDC_TOKEN_LOGO_URL =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png';
@@ -84,3 +87,5 @@ export const UNLIMITED_ALLOWANCE_IN_BASE_UNITS =
   '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
 export const SWAP_SPENDER = '0xb7742b7cf4d590de1f2bded0139537fea8f00710';
+
+export const SNACKBAR_DURATION = 5000;

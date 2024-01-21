@@ -6,6 +6,7 @@ const StyledPrimaryButton = styled(Button, {
   height: 52,
   maxWidth: 340,
   backgroundColor: theme.palette.primary.light,
+  textTransform: 'none',
 }));
 
 export const PrimaryButton: React.FC<ButtonProps> = (props) => {
