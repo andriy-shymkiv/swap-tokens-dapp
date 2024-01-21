@@ -11,7 +11,6 @@ module.exports = {
     'no-multiple-empty-lines': ['error', { max: 1 }],
     'no-duplicate-imports': 'error',
     'eol-last': ['error', 'always'],
-    'newline-before-return': 'error',
     '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',

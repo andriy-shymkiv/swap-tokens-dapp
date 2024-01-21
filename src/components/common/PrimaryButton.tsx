@@ -4,8 +4,9 @@ const StyledPrimaryButton = styled(Button, {
   name: 'StyledPrimaryButton',
 })(({ theme }) => ({
   height: 52,
-  maxWidth: 240,
+  maxWidth: 340,
   backgroundColor: theme.palette.primary.light,
+  textTransform: 'none',
 }));
 
 export const PrimaryButton: React.FC<ButtonProps> = (props) => {
