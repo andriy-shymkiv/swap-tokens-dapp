@@ -3,10 +3,13 @@ import { useWeb3React } from '@web3-react/core';
 import { assert } from 'ts-essentials';
 import { useGetSwapTransaction } from './useGetSwapTransaction';
 import { TransactionResponse } from '@ethersproject/providers';
+import { useSnackbar } from './useSnackbar';
+import { getEllipsisString, isUserRejectedTx } from '~/helpers/utils';
 
 export const useCreateSwap = (): UseMutationResult<TransactionResponse, unknown, void> => {
   const { chainId, account, provider } = useWeb3React();
   const { mutateAsync: getTransaction } = useGetSwapTransaction();
+  const { showSnackbar } = useSnackbar();
 
   const createSwap = async (): Promise<TransactionResponse> => {
     assert(chainId && account && provider, 'chainId, account or provider is undefined');
@@ -19,5 +22,19 @@ export const useCreateSwap = (): UseMutationResult<TransactionResponse, unknown,
     });
   };
 
-  return useMutation(['useCreateSwap'], createSwap);
+  return useMutation(['useCreateSwap'], createSwap, {
+    onError: (error) => {
+      showSnackbar({
+        message: isUserRejectedTx(error) ? 'user rejected transaction' : 'Error creating swap',
+        severity: isUserRejectedTx(error) ? 'warning' : 'error',
+      });
+    },
+    onSuccess: (tx: TransactionResponse) => {
+      // @todo: wait for tx and invalidate balances
+      showSnackbar({
+        message: `Swap created with hash ${getEllipsisString(tx.hash)}`,
+        severity: 'success',
+      });
+    },
+  });
 };

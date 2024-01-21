@@ -6,10 +6,12 @@ import BigNumber from 'bignumber.js';
 import { useWeb3React } from '@web3-react/core';
 import { assert } from 'ts-essentials';
 import { useCallback } from 'react';
+import { useSnackbar } from './useSnackbar';
 
 export const useGetSwapTransaction = (): UseMutationResult<TransactionParams, unknown, void> => {
   const { youPay, youReceive } = useAppSelector(({ app }) => app);
   const { chainId, account } = useWeb3React();
+  const { showSnackbar } = useSnackbar();
 
   const getSwapTransaction = useCallback(async (): Promise<TransactionParams> => {
     assert(chainId && account, 'chainId or account is undefined');
@@ -48,5 +50,12 @@ export const useGetSwapTransaction = (): UseMutationResult<TransactionParams, un
     return transactionRequest;
   }, [account, chainId, youPay, youReceive]);
 
-  return useMutation(['getSwapTransaction'], getSwapTransaction);
+  return useMutation(['getSwapTransaction'], getSwapTransaction, {
+    onError: () => {
+      showSnackbar({
+        message: 'Error building swap transaction',
+        severity: 'error',
+      });
+    },
+  });
 };

@@ -3,6 +3,7 @@ import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 import { Persistor, persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/es/storage';
 import appSlice from './appSlice';
+import snackbarSlice from './snackbarSlice';
 
 const persistConfig = {
   key: 'root',
@@ -11,6 +12,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   app: appSlice,
+  snackbar: snackbarSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
