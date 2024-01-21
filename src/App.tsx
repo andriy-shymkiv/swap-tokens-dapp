@@ -7,6 +7,9 @@ import { SelectTokenScreen } from './components/SelectTokenScreen';
 import { SwapTokensScreen } from './components/SwapTokensScreen';
 import { AppScreen, setAppScreen } from './store/appSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
+import { useIsNetworkSupported } from '~/hooks/useSwitchNetwork';
+import { ChainId } from './walletActions/types';
+import { UnsupportedNetworkScreen } from './components/UnsupportedNetworkScreen';
 
 const StyledWidgetWrapper = styled(Card, {
   name: 'StyledWidgetWrapper',
@@ -38,6 +41,7 @@ export const App: React.FC = (): JSX.Element => {
   const { screen } = useAppSelector(({ app }) => app);
   const { account } = useWeb3React();
   const dispatch = useAppDispatch();
+  const isNetworkSupported = useIsNetworkSupported();
 
   useEffect(() => {
     if (account) {
@@ -50,6 +54,9 @@ export const App: React.FC = (): JSX.Element => {
   const showCloseButton =
     screen !== AppScreen.INITIAL && screen !== AppScreen.SWAP_TOKENS && screen !== AppScreen.CHOOSE_WALLET;
 
+  if (!isNetworkSupported) {
+    return <UnsupportedNetworkScreen networkToSwitch={ChainId.MAINNET} />;
+  }
   return (
     <StyledWidgetWrapper>
       {showCloseButton && (
