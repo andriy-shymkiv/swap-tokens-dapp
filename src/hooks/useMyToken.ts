@@ -141,4 +141,40 @@ export function useTransfer(): UseMutationResult<void, unknown, { to: string; am
   );
 }
 
+export function useMint(): UseMutationResult<void, unknown, { to: string; amount: bigint }> {
+  const myToken = useMyToken();
+  const { showSnackbar } = useSnackbar();
+  return useMutation(
+    ['mint'],
+    async ({ to, amount }) => {
+      return myToken?.mint?.(to, amount);
+    },
+    {
+      onError: () => {
+        showSnackbar({
+          message: 'Error minting tokens',
+          severity: 'error',
+        });
+      },
+    },
+  );
+}
 
+export function useBurnFrom(): UseMutationResult<void, unknown, { from: string; amount: bigint }> {
+  const myToken = useMyToken();
+  const { showSnackbar } = useSnackbar();
+  return useMutation(
+    ['burnFrom'],
+    async ({ from, amount }) => {
+      return myToken?.burnFrom?.(from, amount);
+    },
+    {
+      onError: () => {
+        showSnackbar({
+          message: 'Error burning tokens',
+          severity: 'error',
+        });
+      },
+    },
+  );
+}
