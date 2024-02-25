@@ -72,6 +72,7 @@ export const USDC_TOKEN: Record<ChainId, Token> = {
     logoURI: USDC_TOKEN_LOGO_URL,
   },
 };
+export const SEPOLIA_CHAIN_ID = 11155111; // testnet chain id
 
 export const MULTI_CALL_ADDRESS: Record<ChainId, string> = {
   [ChainId.MAINNET]: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',

@@ -14,6 +14,7 @@ import { useCreateSwap } from '~/hooks/useCreateSwap';
 import { useIsNetworkSupported } from '~/hooks/useSwitchNetwork';
 import { ChainId } from '~/walletActions/types';
 import { UnsupportedNetworkScreen } from './UnsupportedNetworkScreen';
+import { SEPOLIA_CHAIN_ID } from '~/utils/constants';
 
 const StyledDisconnectButton = styled(Button, {
   name: 'StyledDisconnectButton',
@@ -27,6 +28,11 @@ const StyledGoToMyTokenButton = styled(Button, {
   textTransform: 'none',
   backgroundColor: theme.palette.success.main,
 }));
+const StyledTooltipWrapper = styled(Box, {
+  name: 'StyledTooltipWrapper',
+})({
+  cursor: 'pointer',
+});
 
 export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const { account, connector, chainId } = useWeb3React();
@@ -70,16 +76,16 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
       <Box display={'flex'} width={'100%'} justifyContent={'space-between'} alignItems={'center'} gap={2}>
         <Typography variant={'body1'}>{`Connected to ${getEllipsisString(account)}`}</Typography>
         <Box display={'flex'} flexDirection={'column'} gap={2}>
-          <Tooltip title={chainId !== 11155111 ? 'only for Sepolia' : ''} placement="left" arrow>
-            <Box sx={{ cursor: 'pointer' }}>
+          <Tooltip title={chainId !== SEPOLIA_CHAIN_ID ? 'only for Sepolia' : ''} placement="left" arrow>
+            <StyledTooltipWrapper>
               <StyledGoToMyTokenButton
                 variant={'contained'}
                 onClick={handleGoToMyToken}
-                disabled={chainId !== 11155111}
+                disabled={chainId !== SEPOLIA_CHAIN_ID}
               >
                 {'Go to MyToken'}
               </StyledGoToMyTokenButton>
-            </Box>
+            </StyledTooltipWrapper>
           </Tooltip>
 
           <StyledDisconnectButton variant={'contained'} onClick={handleDisconnect}>

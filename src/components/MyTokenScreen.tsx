@@ -1,8 +1,18 @@
-import { Box, Button, CircularProgress, Typography, styled } from '@mui/material';
+import { Box, Button, CircularProgress, TextField, Typography, styled } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { useMyTokenDetails, useBalanceOf, useIsBlackListed, useAllowance } from '~/hooks/useMyToken';
-import { formatUnits } from 'ethers';
+import {
+  useMyTokenDetails,
+  useBalanceOf,
+  useIsAdmin,
+  useIsBlackListed,
+  useAllowance,
+  useTransfer,
+  useManageBlackList,
+} from '~/hooks/useMyToken';
+import { formatUnits, parseUnits, isAddress } from 'ethers';
 import { getEllipsisString } from '~/helpers/utils';
+import { Form, Formik } from 'formik';
+import { useSnackbar } from '~/hooks/useSnackbar';
 
 const StyledTxButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -15,10 +25,15 @@ const StyledTxButton = styled(Button)(({ theme }) => ({
 
 export const MyTokenScreen = (): JSX.Element => {
   const { account } = useWeb3React();
+  const { showSnackbar } = useSnackbar();
   const { data: details, isLoading: isDetailsLoading } = useMyTokenDetails();
+  const { data: isAdmin, isLoading: isAdminLoading } = useIsAdmin(account);
   const { data: isBlackListed, isLoading: isBlackListedLoading } = useIsBlackListed(account);
   const { data: balanceOf, isLoading: isBalanceOfLoading } = useBalanceOf(account);
   const { data: allowance, isLoading: isAllowanceLoading } = useAllowance(account);
+  const { mutate: transfer } = useTransfer();
+  const { mutate: manageBlackList } = useManageBlackList();
+
   return (
     <Box display={'flex'} flexDirection={'column'} gap={6}>
       <Box>
@@ -40,6 +55,22 @@ export const MyTokenScreen = (): JSX.Element => {
       </Box>
       <Box>
         {getEllipsisString(account)}:
+        <Box>
+          <Typography display="inline" color={(theme) => theme.palette.info.main}>
+            {'hasRole(ADMIN_ROLE):'}
+          </Typography>{' '}
+          {isAdminLoading ? (
+            <CircularProgress size={20} thickness={8} />
+          ) : isAdmin ? (
+            <Typography display="inline" fontWeight={700} color={(theme) => theme.palette.success.main}>
+              {'true'}
+            </Typography>
+          ) : (
+            <Typography display="inline" fontWeight={700} color={(theme) => theme.palette.info.main}>
+              {'false'}
+            </Typography>
+          )}
+        </Box>
         <Box>
           <Typography display="inline" color={(theme) => theme.palette.info.main}>
             {'blackList:'}
@@ -80,13 +111,122 @@ export const MyTokenScreen = (): JSX.Element => {
             </Typography>
           )}
         </Box>
-        <Box display={'flex'} flexDirection={'column'} gap={2} width={'max-content'}>
-          <StyledTxButton size="small" variant="contained">
-            {'transfer'}
-          </StyledTxButton>
-          <StyledTxButton size="small" variant="contained">
-            {'transferFrom'}
-          </StyledTxButton>
+        <Box display={'flex'} flexDirection={'column'} gap={2}>
+          <Formik
+            initialValues={{
+              account: '',
+            }}
+            onSubmit={({ account }) => {
+              if (!isAddress(account)) {
+                showSnackbar({
+                  message: 'Invalid address',
+                  severity: 'error',
+                });
+              } else {
+                manageBlackList({
+                  action: 'add',
+                  account,
+                });
+              }
+            }}
+          >
+            {({ values, handleChange, handleSubmit }) => (
+              <Form onSubmit={handleSubmit}>
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={4}>
+                  <StyledTxButton variant="contained" type="submit">
+                    {'addToBlackList'}
+                  </StyledTxButton>
+                  <Box display={'flex'} flexDirection={'column'} gap={1}>
+                    <TextField
+                      size="small"
+                      name="account"
+                      placeholder="account"
+                      value={values.account}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                </Box>
+              </Form>
+            )}
+          </Formik>
+
+          <Formik
+            initialValues={{
+              account: '',
+            }}
+            onSubmit={({ account }) => {
+              if (!isAddress(account)) {
+                showSnackbar({
+                  message: 'Invalid address',
+                  severity: 'error',
+                });
+              } else {
+                manageBlackList({
+                  action: 'remove',
+                  account,
+                });
+              }
+            }}
+          >
+            {({ values, handleChange, handleSubmit }) => (
+              <Form onSubmit={handleSubmit}>
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={4}>
+                  <StyledTxButton variant="contained" type="submit">
+                    {'removeFromBlackList'}
+                  </StyledTxButton>
+                  <Box display={'flex'} flexDirection={'column'} gap={1}>
+                    <TextField
+                      size="small"
+                      name="account"
+                      placeholder="account"
+                      value={values.account}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                </Box>
+              </Form>
+            )}
+          </Formik>
+
+          <Formik
+            initialValues={{
+              to: '',
+              amount: '',
+            }}
+            onSubmit={({ to, amount }) => {
+              if (!isAddress(to) || !amount) {
+                showSnackbar({
+                  message: 'Invalid address or amount',
+                  severity: 'error',
+                });
+              } else {
+                transfer({
+                  to,
+                  amount: parseUnits(amount, 18),
+                });
+              }
+            }}
+          >
+            {({ values, handleChange, handleSubmit }) => (
+              <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={4}>
+                  <StyledTxButton variant="contained" type="submit">
+                    {'transfer'}
+                  </StyledTxButton>
+                  <Box display={'flex'} flexDirection={'column'} gap={1}>
+                    <TextField size="small" name="to" placeholder="to" value={values.to} onChange={handleChange} />
+                    <TextField
+                      size="small"
+                      name="amount"
+                      placeholder="amount"
+                      value={values.amount}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                </Box>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Box>
     </Box>

@@ -26,22 +26,6 @@ export function useMyToken(): Contract | null {
     setMyToken(contract);
   }, [provider, account]);
 
-  // const handleTx = async (): Promise<void> => {
-  //   // Example: Transfer tokens
-  //   if (contract && account) {
-  //     // await contract.mint?.(account, 0.009 * 10 ** 18);
-  //     // const bl = await contract.blackList?.(account);
-  //     // console.log('bl', bl);
-  //     // setIsBlackListed(bl);
-  //     await contract.transfer?.('0x9e08D72501C1ccE2916AaC582D5536f414fD8A1b', 0.009 * 10 ** 18);
-  //   }
-  // };
-
-  // const addToBlackList = async (address: string): Promise<void> => {
-  //   if (contract && account) {
-  //     await contract.addToBlackList?.([address]);
-  //   }
-  // };
   return myToken;
 }
 
@@ -69,6 +53,18 @@ export function useMyTokenDetails(): UseQueryResult<
       staleTime: Infinity,
       cacheTime: Infinity,
     },
+  );
+}
+
+export function useIsAdmin(address?: string): UseQueryResult<boolean, Error> {
+  const myToken = useMyToken();
+
+  return useQuery(
+    ['isAdmin', address],
+    () => {
+      return myToken?.hasRole?.(myToken?.ADMIN_ROLE?.(), address);
+    },
+    { enabled: !!myToken && !!address },
   );
 }
 
@@ -106,13 +102,33 @@ export function useAllowance(address?: string): UseQueryResult<string, Error> {
   );
 }
 
-export function useTransfer(): UseMutationResult<void, unknown, { to: string; amount: string }> {
+export function useManageBlackList(): UseMutationResult<void, unknown, { action: 'add' | 'remove'; account: string }> {
+  const myToken = useMyToken();
+  const { showSnackbar } = useSnackbar();
+  return useMutation(
+    ['manageBlackList'],
+    async ({ action, account }) => {
+      const executable = action === 'add' ? 'addToBlackList' : 'removeFromBlackList';
+      return myToken?.[executable]?.([account]);
+    },
+    {
+      onError: () => {
+        showSnackbar({
+          message: 'Error managing black list, maybe you are not allowed to do this',
+          severity: 'error',
+        });
+      },
+    },
+  );
+}
+
+export function useTransfer(): UseMutationResult<void, unknown, { to: string; amount: bigint }> {
   const myToken = useMyToken();
   const { showSnackbar } = useSnackbar();
   return useMutation(
     ['transfer'],
     async ({ to, amount }) => {
-      await myToken?.transfer?.(to, amount);
+      return myToken?.transfer?.(to, amount);
     },
     {
       onError: () => {
@@ -124,3 +140,5 @@ export function useTransfer(): UseMutationResult<void, unknown, { to: string; am
     },
   );
 }
+
+
