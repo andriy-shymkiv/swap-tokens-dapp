@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
-  define: { 'process.env': {} },
+  define: { 'process.env': {}, global: 'globalThis' },
   optimizeDeps: {
     esbuildOptions: {
       define: { global: 'globalThis' },
