@@ -11,6 +11,9 @@ import { SelectChain } from './SelectChain';
 import { useSwapCondition } from '~/hooks/useSwapCondition';
 import { useRequestApprove } from '~/hooks/useRequestApprove';
 import { useCreateSwap } from '~/hooks/useCreateSwap';
+import { useIsNetworkSupported } from '~/hooks/useSwitchNetwork';
+import { ChainId } from '~/walletActions/types';
+import { UnsupportedNetworkScreen } from './UnsupportedNetworkScreen';
 
 const StyledDisconnectButton = styled(Button, {
   name: 'StyledDisconnectButton',
@@ -18,10 +21,17 @@ const StyledDisconnectButton = styled(Button, {
   textTransform: 'none',
   backgroundColor: theme.palette.error.main,
 }));
+const StyledGoToMyTokenButton = styled(Button, {
+  name: 'StyledGoToMyTokenButton',
+})(({ theme }) => ({
+  textTransform: 'none',
+  backgroundColor: theme.palette.success.main,
+}));
 
 export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const { account, connector } = useWeb3React();
   const dispatch = useAppDispatch();
+  const isNetworkSupported = useIsNetworkSupported();
   const { isEnoughBalance, isEnoughAllowance } = useSwapCondition();
   const { mutate: requestApprove, isLoading: isRequestApproveLoading } = useRequestApprove();
   const { mutate: createSwap, isLoading: isCreateSwapLoading } = useCreateSwap();
@@ -34,6 +44,10 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
     dispatch(resetState());
     connector.resetState();
   }, [connector, dispatch]);
+
+  const handleGoToMyToken = useCallback(() => {
+    dispatch(setAppScreen(AppScreen.MY_TOKEN));
+  }, [dispatch]);
 
   const onClick = useCallback((): void => {
     if (!isEnoughBalance) {
@@ -55,30 +69,41 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
     <>
       <Box display={'flex'} width={'100%'} justifyContent={'space-between'} alignItems={'center'} gap={2}>
         <Typography variant={'body1'}>{`Connected to ${getEllipsisString(account)}`}</Typography>
-        <StyledDisconnectButton variant={'contained'} onClick={handleDisconnect}>
-          {'Disconnect'}
-        </StyledDisconnectButton>
+        <Box display={'flex'} flexDirection={'column'} gap={2}>
+          <StyledGoToMyTokenButton variant={'contained'} onClick={handleGoToMyToken}>
+            {'Go to MyToken'}
+          </StyledGoToMyTokenButton>
+          <StyledDisconnectButton variant={'contained'} onClick={handleDisconnect}>
+            {'Disconnect'}
+          </StyledDisconnectButton>
+        </Box>
       </Box>
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        alignItems={'center'}
-        justifyContent={'center'}
-        gap={4}
-        flexGrow={1}
-      >
-        <SelectChain />
-        <AssetInput type={AssetInputType.PAY} />
-        <FlipTokensButton />
-        <AssetInput type={AssetInputType.RECEIVE} />
+      {!isNetworkSupported ? (
+        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexGrow={1}>
+          <UnsupportedNetworkScreen networkToSwitch={ChainId.MAINNET} />
+        </Box>
+      ) : (
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          gap={4}
+          flexGrow={1}
+        >
+          <SelectChain />
+          <AssetInput type={AssetInputType.PAY} />
+          <FlipTokensButton />
+          <AssetInput type={AssetInputType.RECEIVE} />
 
-        <PrimaryButton fullWidth disabled={isButtonDisabled} onClick={onClick}>
-          <Box display={'flex'} alignItems={'center'} gap={2}>
-            {buttonLabel}
-            {isLoader && <CircularProgress size={24} color="info" />}
-          </Box>
-        </PrimaryButton>
-      </Box>
+          <PrimaryButton fullWidth disabled={isButtonDisabled} onClick={onClick}>
+            <Box display={'flex'} alignItems={'center'} gap={2}>
+              {buttonLabel}
+              {isLoader && <CircularProgress size={24} color="info" />}
+            </Box>
+          </PrimaryButton>
+        </Box>
+      )}
     </>
   );
 };

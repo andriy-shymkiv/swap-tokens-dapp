@@ -27,7 +27,7 @@ export const UnsupportedNetworkScreen = ({
   return (
     <ErrorCommon
       message={
-        <Box>
+        <Box textAlign={'center'}>
           {`Current network is not supported, click`}{' '}
           <StyledButton onClick={onClick}>
             <Typography>{'here'}</Typography>
