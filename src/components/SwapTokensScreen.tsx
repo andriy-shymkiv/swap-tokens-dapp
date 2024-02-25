@@ -1,4 +1,4 @@
-import { Box, Button, styled, Typography, CircularProgress } from '@mui/material';
+import { Box, Button, styled, Typography, CircularProgress, Tooltip } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { getEllipsisString } from '~/helpers/utils';
@@ -29,7 +29,7 @@ const StyledGoToMyTokenButton = styled(Button, {
 }));
 
 export const SwapTokensScreen: React.FC = (): JSX.Element => {
-  const { account, connector } = useWeb3React();
+  const { account, connector, chainId } = useWeb3React();
   const dispatch = useAppDispatch();
   const isNetworkSupported = useIsNetworkSupported();
   const { isEnoughBalance, isEnoughAllowance } = useSwapCondition();
@@ -70,9 +70,18 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
       <Box display={'flex'} width={'100%'} justifyContent={'space-between'} alignItems={'center'} gap={2}>
         <Typography variant={'body1'}>{`Connected to ${getEllipsisString(account)}`}</Typography>
         <Box display={'flex'} flexDirection={'column'} gap={2}>
-          <StyledGoToMyTokenButton variant={'contained'} onClick={handleGoToMyToken}>
-            {'Go to MyToken'}
-          </StyledGoToMyTokenButton>
+          <Tooltip title={chainId !== 11155111 ? 'only for Sepolia' : ''} placement="left" arrow>
+            <Box sx={{ cursor: 'pointer' }}>
+              <StyledGoToMyTokenButton
+                variant={'contained'}
+                onClick={handleGoToMyToken}
+                disabled={chainId !== 11155111}
+              >
+                {'Go to MyToken'}
+              </StyledGoToMyTokenButton>
+            </Box>
+          </Tooltip>
+
           <StyledDisconnectButton variant={'contained'} onClick={handleDisconnect}>
             {'Disconnect'}
           </StyledDisconnectButton>
