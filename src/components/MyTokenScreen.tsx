@@ -177,7 +177,7 @@ export const MyTokenScreen = (): JSX.Element => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {txHistory?.result.slice(0, 5).map((tx) => (
+                    {txHistory?.result?.slice(0, 5).map((tx) => (
                       <TableRow key={tx.hash} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                         <TableCell component="th" scope="row">
                           {getEllipsisString(tx.hash)}
