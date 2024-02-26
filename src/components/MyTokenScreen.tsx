@@ -8,6 +8,8 @@ import {
   useAllowance,
   useTransfer,
   useManageBlackList,
+  useMint,
+  useBurnFrom,
 } from '~/hooks/useMyToken';
 import { formatUnits, parseUnits, isAddress } from 'ethers';
 import { getEllipsisString } from '~/helpers/utils';
@@ -32,6 +34,8 @@ export const MyTokenScreen = (): JSX.Element => {
   const { data: balanceOf, isLoading: isBalanceOfLoading } = useBalanceOf(account);
   const { data: allowance, isLoading: isAllowanceLoading } = useAllowance(account);
   const { mutate: transfer } = useTransfer();
+  const { mutate: mint } = useMint();
+  const { mutate: burnFrom } = useBurnFrom();
   const { mutate: manageBlackList } = useManageBlackList();
 
   return (
@@ -140,7 +144,7 @@ export const MyTokenScreen = (): JSX.Element => {
                     <TextField
                       size="small"
                       name="account"
-                      placeholder="account"
+                      placeholder="address"
                       value={values.account}
                       onChange={handleChange}
                     />
@@ -178,7 +182,7 @@ export const MyTokenScreen = (): JSX.Element => {
                     <TextField
                       size="small"
                       name="account"
-                      placeholder="account"
+                      placeholder="address"
                       value={values.account}
                       onChange={handleChange}
                     />
@@ -214,7 +218,92 @@ export const MyTokenScreen = (): JSX.Element => {
                     {'transfer'}
                   </StyledTxButton>
                   <Box display={'flex'} flexDirection={'column'} gap={1}>
-                    <TextField size="small" name="to" placeholder="to" value={values.to} onChange={handleChange} />
+                    <TextField size="small" name="to" placeholder="address" value={values.to} onChange={handleChange} />
+                    <TextField
+                      size="small"
+                      name="amount"
+                      placeholder="amount"
+                      value={values.amount}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                </Box>
+              </Form>
+            )}
+          </Formik>
+
+          <Formik
+            initialValues={{
+              to: '',
+              amount: '',
+            }}
+            onSubmit={({ to, amount }) => {
+              if (!isAddress(to) || !amount) {
+                showSnackbar({
+                  message: 'Invalid address or amount',
+                  severity: 'error',
+                });
+              } else {
+                mint({
+                  to,
+                  amount: parseUnits(amount, 18),
+                });
+              }
+            }}
+          >
+            {({ values, handleChange, handleSubmit }) => (
+              <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={4}>
+                  <StyledTxButton variant="contained" type="submit">
+                    {'mint'}
+                  </StyledTxButton>
+                  <Box display={'flex'} flexDirection={'column'} gap={1}>
+                    <TextField size="small" name="to" placeholder="address" value={values.to} onChange={handleChange} />
+                    <TextField
+                      size="small"
+                      name="amount"
+                      placeholder="amount"
+                      value={values.amount}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                </Box>
+              </Form>
+            )}
+          </Formik>
+          <Formik
+            initialValues={{
+              from: '',
+              amount: '',
+            }}
+            onSubmit={({ from, amount }) => {
+              if (!isAddress(from) || !amount) {
+                showSnackbar({
+                  message: 'Invalid address or amount',
+                  severity: 'error',
+                });
+              } else {
+                burnFrom({
+                  from,
+                  amount: parseUnits(amount, 18),
+                });
+              }
+            }}
+          >
+            {({ values, handleChange, handleSubmit }) => (
+              <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={4}>
+                  <StyledTxButton variant="contained" type="submit">
+                    {'burnFrom'}
+                  </StyledTxButton>
+                  <Box display={'flex'} flexDirection={'column'} gap={1}>
+                    <TextField
+                      size="small"
+                      name="from"
+                      placeholder="address"
+                      value={values.from}
+                      onChange={handleChange}
+                    />
                     <TextField
                       size="small"
                       name="amount"

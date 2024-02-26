@@ -18,7 +18,7 @@ export function useMyToken(): Contract | null {
     const contract = new Contract(
       MY_TOKEN,
       myTokenAbi,
-      // todo: investigate why the fuck it is TS error here
+      // why ???
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       provider.getSigner(),
