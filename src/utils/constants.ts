@@ -74,6 +74,17 @@ export const USDC_TOKEN: Record<ChainId, Token> = {
 };
 export const SEPOLIA_CHAIN_ID = 11155111; // testnet chain id
 
+export const ETHERSCAN_API_URL: Record<ChainId | number, string> = {
+  [ChainId.MAINNET]: 'https://api.etherscan.io',
+  [ChainId.BSC]: 'https://api.bscscan.com',
+  [ChainId.POLYGON]: 'https://api.polygonscan.com',
+  [ChainId.ARBITRUM]: 'https://api.arbiscan.io',
+  [ChainId.AVALANCHE]: 'https://api.cchain.explorer.avax.network',
+  [ChainId.FANTOM]: 'https://api.ftmscan.com',
+  [ChainId.OPTIMISM]: 'https://api-optimistic.etherscan.io',
+  [SEPOLIA_CHAIN_ID]: 'https://api-sepolia.etherscan.io',
+};
+
 export const MULTI_CALL_ADDRESS: Record<ChainId, string> = {
   [ChainId.MAINNET]: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
   [ChainId.BSC]: '0xC50F4c1E81c873B2204D7eFf7069Ffec6Fbe136D',

@@ -7,6 +7,7 @@ import myTokenAbi from '~/abis/mytoken.json';
 import { MY_TOKEN } from '~/utils/constants';
 import { useSnackbar } from './useSnackbar';
 
+// the most of this hooks probably will be deleted after pdp
 export function useMyToken(): Contract | null {
   const [myToken, setMyToken] = useState<Contract | null>(null);
   const { provider, account } = useWeb3React<Web3Provider>();
@@ -18,9 +19,9 @@ export function useMyToken(): Contract | null {
     const contract = new Contract(
       MY_TOKEN,
       myTokenAbi,
-      // why ???
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
+      // todo: need to manually fix type mismatch between ethers and web3 - react
       provider.getSigner(),
     );
     setMyToken(contract);

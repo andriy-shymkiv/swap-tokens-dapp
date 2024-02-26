@@ -1,4 +1,19 @@
-import { Box, Button, CircularProgress, TextField, Typography, styled } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Modal,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  styled,
+} from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import {
   useMyTokenDetails,
@@ -15,8 +30,12 @@ import { formatUnits, parseUnits, isAddress } from 'ethers';
 import { getEllipsisString } from '~/helpers/utils';
 import { Form, Formik } from 'formik';
 import { useSnackbar } from '~/hooks/useSnackbar';
+import { useTransactionHistory } from '~/hooks/useTransactionHistory';
+import { useState } from 'react';
 
-const StyledTxButton = styled(Button)(({ theme }) => ({
+const StyledTxButton = styled(Button, {
+  name: 'StyledTxButton',
+})(({ theme }) => ({
   color: theme.palette.text.primary,
   backgroundColor: theme.palette.success.main,
   textTransform: 'none',
@@ -24,9 +43,22 @@ const StyledTxButton = styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.success.dark,
   },
 }));
+const StyledBox = styled(Box, {
+  name: 'StyledBox',
+})(({ theme }) => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  padding: theme.spacing(4),
+  boxShadow: theme.shadows[5],
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.palette.background.paper,
+}));
 
+// this component will be deleted from the codebase after pdp
 export const MyTokenScreen = (): JSX.Element => {
-  const { account } = useWeb3React();
+  const { account, chainId } = useWeb3React();
   const { showSnackbar } = useSnackbar();
   const { data: details, isLoading: isDetailsLoading } = useMyTokenDetails();
   const { data: isAdmin, isLoading: isAdminLoading } = useIsAdmin(account);
@@ -37,6 +69,9 @@ export const MyTokenScreen = (): JSX.Element => {
   const { mutate: mint } = useMint();
   const { mutate: burnFrom } = useBurnFrom();
   const { mutate: manageBlackList } = useManageBlackList();
+  const { data: txHistory } = useTransactionHistory(account, chainId);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <Box display={'flex'} flexDirection={'column'} gap={6}>
@@ -116,6 +151,47 @@ export const MyTokenScreen = (): JSX.Element => {
           )}
         </Box>
         <Box display={'flex'} flexDirection={'column'} gap={2}>
+          <StyledTxButton
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
+            show last 5 transactions
+          </StyledTxButton>
+          <Modal
+            open={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+            }}
+          >
+            <StyledBox>
+              last 5 transactions from etherscan:
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>tx hash</TableCell>
+                      <TableCell align="right">blockNumber</TableCell>
+                      <TableCell align="right">from</TableCell>
+                      <TableCell align="right">to</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {txHistory?.result.slice(0, 5).map((tx) => (
+                      <TableRow key={tx.hash} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          {getEllipsisString(tx.hash)}
+                        </TableCell>
+                        <TableCell align="right">{getEllipsisString(tx.blockNumber?.toString())}</TableCell>
+                        <TableCell align="right">{getEllipsisString(tx.from)}</TableCell>
+                        <TableCell align="right">{getEllipsisString(tx.to ?? '')}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </StyledBox>
+          </Modal>
           <Formik
             initialValues={{
               account: '',
