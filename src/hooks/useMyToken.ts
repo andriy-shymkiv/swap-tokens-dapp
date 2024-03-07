@@ -21,7 +21,7 @@ export function useMyToken(): Contract | null {
       myTokenAbi,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      // todo: need to manually fix type mismatch between ethers and web3 - react
+      // todo: need to fix type mismatch between ethers and @web3-react
       provider.getSigner(),
     );
     setMyToken(contract);
@@ -43,12 +43,15 @@ export function useMyTokenDetails(): UseQueryResult<
 
   return useQuery(
     ['myTokenDetails'],
-    async () => ({
-      name: await myToken?.name?.(),
-      symbol: await myToken?.symbol?.(),
-      decimals: await myToken?.decimals?.(),
-      totalSupply: await myToken?.totalSupply?.(),
-    }),
+    async () => {
+      const [name, symbol, decimals, totalSupply] = await Promise.all([
+        myToken?.name?.(),
+        myToken?.symbol?.(),
+        myToken?.decimals?.(),
+        myToken?.totalSupply?.(),
+      ]);
+      return { name, symbol, decimals, totalSupply };
+    },
     {
       enabled: !!myToken,
       staleTime: Infinity,
