@@ -10,6 +10,7 @@ export enum AppScreen {
   SWAP_TOKENS = 'SWAP_TOKENS',
   SELECT_YOU_PAY_TOKEN = 'SELECT_YOU_PAY_TOKEN',
   SELECT_YOU_RECEIVE_TOKEN = 'SELECT_YOU_RECEIVE_TOKEN',
+  MY_TOKEN = 'MY_TOKEN',
 }
 
 export interface AppState {

@@ -72,6 +72,18 @@ export const USDC_TOKEN: Record<ChainId, Token> = {
     logoURI: USDC_TOKEN_LOGO_URL,
   },
 };
+export const SEPOLIA_CHAIN_ID = 11155111; // testnet chain id
+
+export const ETHERSCAN_API_URL: Record<ChainId | number, string> = {
+  [ChainId.MAINNET]: 'https://api.etherscan.io',
+  [ChainId.BSC]: 'https://api.bscscan.com',
+  [ChainId.POLYGON]: 'https://api.polygonscan.com',
+  [ChainId.ARBITRUM]: 'https://api.arbiscan.io',
+  [ChainId.AVALANCHE]: 'https://api.cchain.explorer.avax.network',
+  [ChainId.FANTOM]: 'https://api.ftmscan.com',
+  [ChainId.OPTIMISM]: 'https://api-optimistic.etherscan.io',
+  [SEPOLIA_CHAIN_ID]: 'https://api-sepolia.etherscan.io',
+};
 
 export const MULTI_CALL_ADDRESS: Record<ChainId, string> = {
   [ChainId.MAINNET]: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
@@ -87,5 +99,7 @@ export const UNLIMITED_ALLOWANCE_IN_BASE_UNITS =
   '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
 export const SWAP_SPENDER = '0xb7742b7cf4d590de1f2bded0139537fea8f00710';
+
+export const MY_TOKEN = '0x732Cb99100EC7f93F49BEf9d90ede40EED53b67D';
 
 export const SNACKBAR_DURATION = 5000;
