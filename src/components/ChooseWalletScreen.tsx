@@ -7,7 +7,14 @@ export const ChooseWalletScreen: React.FC = (): JSX.Element => {
   const { mutate: connectWalletMutate } = useConnectWallet();
 
   return (
-    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} gap={4} flexGrow={1}>
+    <Box
+      display={'flex'}
+      flexDirection={'column'}
+      alignItems={'center'}
+      justifyContent={'center'}
+      gap={4}
+      flexGrow={1}
+    >
       {AVAILABLE_CONNECTIONS.map((connection) => (
         <PrimaryButton
           fullWidth

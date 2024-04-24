@@ -17,7 +17,10 @@ const snackbar = createSlice({
   name: 'snackbar',
   initialState,
   reducers: {
-    openSnackbar: (state: SnackbarState, action: PayloadAction<Pick<SnackbarState, 'message' | 'severity'>>) => {
+    openSnackbar: (
+      state: SnackbarState,
+      action: PayloadAction<Pick<SnackbarState, 'message' | 'severity'>>,
+    ) => {
       state.isOpen = true;
       state.message = action.payload.message;
       state.severity = action.payload.severity;

@@ -52,7 +52,9 @@ export const App: React.FC = (): JSX.Element => {
   }, [account, dispatch]);
 
   const showCloseButton =
-    screen !== AppScreen.INITIAL && screen !== AppScreen.SWAP_TOKENS && screen !== AppScreen.CHOOSE_WALLET;
+    screen !== AppScreen.INITIAL &&
+    screen !== AppScreen.SWAP_TOKENS &&
+    screen !== AppScreen.CHOOSE_WALLET;
 
   if (!isNetworkSupported) {
     return <UnsupportedNetworkScreen networkToSwitch={ChainId.MAINNET} />;
@@ -60,15 +62,18 @@ export const App: React.FC = (): JSX.Element => {
   return (
     <StyledWidgetWrapper>
       {showCloseButton && (
-        <StyledCloseButton onClick={() => dispatch(setAppScreen(AppScreen.SWAP_TOKENS))}>x</StyledCloseButton>
+        <StyledCloseButton
+          onClick={() => dispatch(setAppScreen(AppScreen.SWAP_TOKENS))}
+        >
+          x
+        </StyledCloseButton>
       )}
 
       {screen === AppScreen.INITIAL && <ConnectWalletButton />}
       {screen === AppScreen.CHOOSE_WALLET && <ChooseWalletScreen />}
       {screen === AppScreen.SWAP_TOKENS && <SwapTokensScreen />}
-      {(screen === AppScreen.SELECT_YOU_PAY_TOKEN || screen === AppScreen.SELECT_YOU_RECEIVE_TOKEN) && (
-        <SelectTokenScreen />
-      )}
+      {(screen === AppScreen.SELECT_YOU_PAY_TOKEN ||
+        screen === AppScreen.SELECT_YOU_RECEIVE_TOKEN) && <SelectTokenScreen />}
     </StyledWidgetWrapper>
   );
 };

@@ -14,7 +14,12 @@ import { useCallback, useMemo, useState } from 'react';
 import { isNonEmptyArray } from '~/helpers/utils';
 import { useTokenBalances } from '~/hooks/useTokenBalances';
 import { useTokenLists } from '~/hooks/useTokenLists';
-import { AppScreen, setAppScreen, setYouPayToken, setYouReceiveToken } from '~/store/appSlice';
+import {
+  AppScreen,
+  setAppScreen,
+  setYouPayToken,
+  setYouReceiveToken,
+} from '~/store/appSlice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import { Token } from '~/types/tokens';
 import { EMPTY_ARRAY } from '~/utils/constants';
@@ -85,26 +90,38 @@ interface TokenWithBalance extends Token {
 export const SelectTokenScreen: React.FC = (): JSX.Element => {
   const { selectedChainId, screen } = useAppSelector(({ app }) => app);
   const { data: tokensList, isLoading: tokensListIsLoading } = useTokenLists();
-  const { data: tokenBalances, isFetching: tokensBalancesIsFetching } = useTokenBalances();
+  const { data: tokenBalances, isFetching: tokensBalancesIsFetching } =
+    useTokenBalances();
   const dispatch = useAppDispatch();
   const [query, setQuery] = useState('');
 
   const tokensToDisplay: TokenWithBalance[] = useMemo(
     () =>
       tokensList?.[selectedChainId]
-        ?.map((token) => ({ ...token, balance: Number(tokenBalances?.[token.address]?.humanAmount) ?? 0 }))
+        ?.map((token) => ({
+          ...token,
+          balance: Number(tokenBalances?.[token.address]?.humanAmount) ?? 0,
+        }))
         .sort((token1, token2) => token2.balance - token1.balance)
-        .filter((token) => token.symbol.toLowerCase().includes(query.trim())) ?? EMPTY_ARRAY,
+        .filter((token) => token.symbol.toLowerCase().includes(query.trim())) ??
+      EMPTY_ARRAY,
     [tokensList, selectedChainId, tokenBalances, query],
   );
 
-  const onQueryChange = debounce((event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value.toLowerCase());
-  }, 500);
+  const onQueryChange = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(event.target.value.toLowerCase());
+    },
+    500,
+  );
 
   const onSelectTokenClick = useCallback(
     (token: Token) => {
-      dispatch(screen === AppScreen.SELECT_YOU_PAY_TOKEN ? setYouPayToken(token) : setYouReceiveToken(token));
+      dispatch(
+        screen === AppScreen.SELECT_YOU_PAY_TOKEN
+          ? setYouPayToken(token)
+          : setYouReceiveToken(token),
+      );
       dispatch(setAppScreen(AppScreen.SWAP_TOKENS));
     },
     [dispatch, screen],
@@ -129,10 +146,21 @@ export const SelectTokenScreen: React.FC = (): JSX.Element => {
       {isNonEmptyArray(tokensToDisplay) ? (
         <StyledTokensWrapper>
           {tokensToDisplay.map((token) => (
-            <StyledTokenButton key={token.address} onClick={(): void => onSelectTokenClick(token)}>
+            <StyledTokenButton
+              key={token.address}
+              onClick={(): void => onSelectTokenClick(token)}
+            >
               <StyledTokenImage src={token.logoURI} alt={token.symbol} />
-              <Box display={'flex'} width={'100%'} justifyContent={'space-between'}>
-                <Typography variant="body2" color="text.primary" fontWeight={700}>
+              <Box
+                display={'flex'}
+                width={'100%'}
+                justifyContent={'space-between'}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  fontWeight={700}
+                >
                   {token.symbol}
                 </Typography>
                 <Typography variant="body2">
@@ -154,12 +182,28 @@ export const SelectTokenScreen: React.FC = (): JSX.Element => {
       ) : (
         <>
           {tokensListIsLoading ? (
-            <Box position={'relative'} display={'flex'} alignItems={'center'} justifyContent={'center'} flexGrow={1}>
-              <StyledLoaderShadow variant="determinate" size={60} thickness={4} value={100} />
+            <Box
+              position={'relative'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              flexGrow={1}
+            >
+              <StyledLoaderShadow
+                variant="determinate"
+                size={60}
+                thickness={4}
+                value={100}
+              />
               <StyledLoader size={60} thickness={6} />
             </Box>
           ) : (
-            <Box display={'flex'} flexDirection={'column'} justifyContent={'start'} alignItems={'center'}>
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'start'}
+              alignItems={'center'}
+            >
               <Typography variant="body1">{`Sorry, we can't find the token.`}</Typography>
               <Typography variant="body1">{`Please, try again`}</Typography>
             </Box>

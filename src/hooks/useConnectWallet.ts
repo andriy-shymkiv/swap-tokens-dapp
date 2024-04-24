@@ -1,4 +1,8 @@
-import { useMutation, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
+import {
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+} from '@tanstack/react-query';
 import { Connector } from '@web3-react/types';
 import { useCallback, useMemo } from 'react';
 import { AppScreen, setAppScreen, setSelectedWallet } from '~/store/appSlice';
@@ -13,14 +17,21 @@ type UseConnectWalletCallbacks = Pick<
 
 export const constructWalletConnectKey = (): any[] => ['walletConnect'];
 
-export const useConnectWallet = (): UseMutationResult<Connector, Error, Connection> => {
+export const useConnectWallet = (): UseMutationResult<
+  Connector,
+  Error,
+  Connection
+> => {
   const dispatch = useAppDispatch();
 
-  const connectWallet = useCallback(async ({ connector }: { connector: Connector }): Promise<Connector> => {
-    await connector.activate();
+  const connectWallet = useCallback(
+    async ({ connector }: { connector: Connector }): Promise<Connector> => {
+      await connector.activate();
 
-    return connector;
-  }, []);
+      return connector;
+    },
+    [],
+  );
 
   const callbacks: UseConnectWalletCallbacks = useMemo(
     () => ({
@@ -37,5 +48,9 @@ export const useConnectWallet = (): UseMutationResult<Connector, Error, Connecti
     [dispatch],
   );
 
-  return useMutation<Connector, Error, Connection>(constructWalletConnectKey(), connectWallet, callbacks);
+  return useMutation<Connector, Error, Connection>(
+    constructWalletConnectKey(),
+    connectWallet,
+    callbacks,
+  );
 };

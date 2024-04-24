@@ -6,13 +6,20 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { useSnackbar } from './useSnackbar';
 import { getEllipsisString, isUserRejectedTx } from '~/helpers/utils';
 
-export const useCreateSwap = (): UseMutationResult<TransactionResponse, unknown, void> => {
+export const useCreateSwap = (): UseMutationResult<
+  TransactionResponse,
+  unknown,
+  void
+> => {
   const { chainId, account, provider } = useWeb3React();
   const { mutateAsync: getTransaction } = useGetSwapTransaction();
   const { showSnackbar } = useSnackbar();
 
   const createSwap = async (): Promise<TransactionResponse> => {
-    assert(chainId && account && provider, 'chainId, account or provider is undefined');
+    assert(
+      chainId && account && provider,
+      'chainId, account or provider is undefined',
+    );
     const signer = provider.getSigner(account);
 
     const { gas: gasLimit, ...rest } = await getTransaction();
@@ -25,7 +32,9 @@ export const useCreateSwap = (): UseMutationResult<TransactionResponse, unknown,
   return useMutation(['useCreateSwap'], createSwap, {
     onError: (error) => {
       showSnackbar({
-        message: isUserRejectedTx(error) ? 'user rejected transaction' : 'Error creating swap',
+        message: isUserRejectedTx(error)
+          ? 'user rejected transaction'
+          : 'Error creating swap',
         severity: isUserRejectedTx(error) ? 'warning' : 'error',
       });
     },

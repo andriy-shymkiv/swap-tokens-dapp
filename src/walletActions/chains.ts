@@ -25,7 +25,8 @@ export const NATIVE_TOKENS: Record<ChainId, Token> = {
     symbol: 'FTM',
     address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     decimals: 18,
-    logoURI: 'https://tokens.1inch.io/0x4e15361fd6b4bb609fa63c81a2be19d873717870.png',
+    logoURI:
+      'https://tokens.1inch.io/0x4e15361fd6b4bb609fa63c81a2be19d873717870.png',
   },
   [ChainId.BSC]: {
     chainId: 56,
@@ -33,7 +34,8 @@ export const NATIVE_TOKENS: Record<ChainId, Token> = {
     symbol: 'BNB',
     address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     decimals: 18,
-    logoURI: 'https://iconape.com/wp-content/files/ti/209546/svg/binance-coin-seeklogo.com.svg',
+    logoURI:
+      'https://iconape.com/wp-content/files/ti/209546/svg/binance-coin-seeklogo.com.svg',
   },
   [ChainId.AVALANCHE]: {
     chainId: 43114,
@@ -95,7 +97,9 @@ export const CHAINS: ChainConfig = {
     blockExplorerUrls: 'https://polygonscan.com',
   },
   [ChainId.BSC]: {
-    rpcUrls: ['https://bsc-mainnet.gateway.pokt.network/v1/lb/6136201a7bad1500343e248d'],
+    rpcUrls: [
+      'https://bsc-mainnet.gateway.pokt.network/v1/lb/6136201a7bad1500343e248d',
+    ],
     name: 'Bsc',
     nativeToken: NATIVE_TOKENS[ChainId.BSC],
     blockExplorerUrls: 'https://bscscan.com',

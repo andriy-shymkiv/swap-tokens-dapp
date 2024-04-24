@@ -6,7 +6,8 @@ export const ONE_HOUR = ONE_MINUTE * 60;
 
 export const EMPTY_ARRAY = [];
 
-export const UNISWAP_TOKEN_LIST_URL = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
+export const UNISWAP_TOKEN_LIST_URL =
+  'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
 export const PARASWAP_API_URL = 'https://apiv5.paraswap.io';
 export const DEFAULT_SLIPPAGE = 1; // 1%
 export const DEFAULT_PARTNER = 'chucknorris';

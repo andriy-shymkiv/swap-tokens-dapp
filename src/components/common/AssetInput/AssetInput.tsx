@@ -1,6 +1,11 @@
 import { Box, OutlinedInput, styled, Typography } from '@mui/material';
 import { useCallback, useRef } from 'react';
-import { AppScreen, setAppScreen, setYouPayTokenAmount, setYouReceiveTokenAmount } from '~/store/appSlice';
+import {
+  AppScreen,
+  setAppScreen,
+  setYouPayTokenAmount,
+  setYouReceiveTokenAmount,
+} from '~/store/appSlice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import { useTokenBalances } from '~/hooks/useTokenBalances';
 import { NumericFormat } from 'react-number-format';
@@ -27,7 +32,9 @@ interface AssetInputProps {
   type: AssetInputType;
 }
 
-export const AssetInput: React.FC<AssetInputProps> = ({ type }): JSX.Element => {
+export const AssetInput: React.FC<AssetInputProps> = ({
+  type,
+}): JSX.Element => {
   const { youPay, youReceive } = useAppSelector(({ app }) => app);
   const { amount, token } = type === AssetInputType.PAY ? youPay : youReceive;
   const dispatch = useAppDispatch();
@@ -37,7 +44,9 @@ export const AssetInput: React.FC<AssetInputProps> = ({ type }): JSX.Element => 
 
   const onClick = useCallback(() => {
     const nextScreen =
-      type === AssetInputType.PAY ? AppScreen.SELECT_YOU_PAY_TOKEN : AppScreen.SELECT_YOU_RECEIVE_TOKEN;
+      type === AssetInputType.PAY
+        ? AppScreen.SELECT_YOU_PAY_TOKEN
+        : AppScreen.SELECT_YOU_RECEIVE_TOKEN;
 
     dispatch(setAppScreen(nextScreen));
   }, [dispatch, type]);

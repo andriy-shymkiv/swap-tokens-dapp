@@ -1,4 +1,11 @@
-import { SelectChangeEvent, FormControl, InputLabel, Select, MenuItem, Box } from '@mui/material';
+import {
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Box,
+} from '@mui/material';
 import { useCallback } from 'react';
 import { setSelectedChainId } from '~/store/appSlice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';

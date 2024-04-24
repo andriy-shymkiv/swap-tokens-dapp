@@ -9,7 +9,11 @@ import { useSnackbar } from './useSnackbar';
 import { getEllipsisString, isUserRejectedTx } from '~/helpers/utils';
 import { TransactionResponse } from '@ethersproject/providers';
 
-export const useRequestApprove = (): UseMutationResult<TransactionResponse, unknown, void> => {
+export const useRequestApprove = (): UseMutationResult<
+  TransactionResponse,
+  unknown,
+  void
+> => {
   const { youPay } = useAppSelector(({ app }) => app);
   const { provider, account, chainId } = useWeb3React();
   const { showSnackbar } = useSnackbar();
@@ -17,7 +21,10 @@ export const useRequestApprove = (): UseMutationResult<TransactionResponse, unkn
 
   // not sure about return type for approve
   const approve = useCallback((): Promise<TransactionResponse> => {
-    assert(provider && account && chainId, 'missing provider, account, or chainId');
+    assert(
+      provider && account && chainId,
+      'missing provider, account, or chainId',
+    );
 
     return requestApprove(provider, {
       clientAddress: account,
@@ -31,7 +38,9 @@ export const useRequestApprove = (): UseMutationResult<TransactionResponse, unkn
   return useMutation(['requestApprove'], approve, {
     onError: (error) => {
       showSnackbar({
-        message: isUserRejectedTx(error) ? 'user rejected transaction' : 'Error creating swap',
+        message: isUserRejectedTx(error)
+          ? 'user rejected transaction'
+          : 'Error creating swap',
         severity: isUserRejectedTx(error) ? 'warning' : 'error',
       });
     },

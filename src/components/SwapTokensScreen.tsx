@@ -1,8 +1,19 @@
-import { Box, Button, styled, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Button,
+  styled,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import { getEllipsisString } from '~/helpers/utils';
-import { AppScreen, resetState, setAppScreen, setSelectedWallet } from '~/store/appSlice';
+import {
+  AppScreen,
+  resetState,
+  setAppScreen,
+  setSelectedWallet,
+} from '~/store/appSlice';
 import { useAppDispatch } from '~/store/hooks';
 import { AssetInput, AssetInputType } from './common/AssetInput/AssetInput';
 import { FlipTokensButton } from './common/FlipTokensButton';
@@ -23,8 +34,10 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const { account, connector } = useWeb3React();
   const dispatch = useAppDispatch();
   const { isEnoughBalance, isEnoughAllowance } = useSwapCondition();
-  const { mutate: requestApprove, isLoading: isRequestApproveLoading } = useRequestApprove();
-  const { mutate: createSwap, isLoading: isCreateSwapLoading } = useCreateSwap();
+  const { mutate: requestApprove, isLoading: isRequestApproveLoading } =
+    useRequestApprove();
+  const { mutate: createSwap, isLoading: isCreateSwapLoading } =
+    useCreateSwap();
 
   const handleDisconnect = useCallback(() => {
     if (connector.deactivate) connector.deactivate();
@@ -47,15 +60,34 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
     }
   }, [isEnoughAllowance, isEnoughBalance, requestApprove, createSwap]);
 
-  const buttonLabel = !isEnoughBalance ? 'Insufficient balance' : !isEnoughAllowance ? 'Unlock' : 'Swap';
-  const isButtonDisabled = !account || !isEnoughBalance || isRequestApproveLoading || isCreateSwapLoading;
+  const buttonLabel = !isEnoughBalance
+    ? 'Insufficient balance'
+    : !isEnoughAllowance
+      ? 'Unlock'
+      : 'Swap';
+  const isButtonDisabled =
+    !account ||
+    !isEnoughBalance ||
+    isRequestApproveLoading ||
+    isCreateSwapLoading;
   const isLoader = isRequestApproveLoading || isCreateSwapLoading;
 
   return (
     <>
-      <Box display={'flex'} width={'100%'} justifyContent={'space-between'} alignItems={'center'} gap={2}>
-        <Typography variant={'body1'}>{`Connected to ${getEllipsisString(account)}`}</Typography>
-        <StyledDisconnectButton variant={'contained'} onClick={handleDisconnect}>
+      <Box
+        display={'flex'}
+        width={'100%'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
+        gap={2}
+      >
+        <Typography
+          variant={'body1'}
+        >{`Connected to ${getEllipsisString(account)}`}</Typography>
+        <StyledDisconnectButton
+          variant={'contained'}
+          onClick={handleDisconnect}
+        >
           {'Disconnect'}
         </StyledDisconnectButton>
       </Box>

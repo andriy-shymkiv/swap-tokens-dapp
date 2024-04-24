@@ -7,7 +7,10 @@ import multiCallAbi from '~/abis/multicall.json';
 import { CHAINS } from '~/walletActions/chains';
 import { ChainId } from '~/walletActions/types';
 import { MulticallResponse, RequestApproveParams } from '~/types/utils';
-import { MULTI_CALL_ADDRESS, UNLIMITED_ALLOWANCE_IN_BASE_UNITS } from './constants';
+import {
+  MULTI_CALL_ADDRESS,
+  UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
+} from './constants';
 
 interface InitUtilsResult {
   getMultipleBalances: (
@@ -21,24 +24,40 @@ interface InitUtilsResult {
     tokens: Token[],
     spender: string,
   ) => Promise<Record<string, MulticallResponse | null>>;
-  getAllowance: (clientAddress: string, token: string, chainId: number, spender: string) => Promise<string>;
+  getAllowance: (
+    clientAddress: string,
+    token: string,
+    chainId: number,
+    spender: string,
+  ) => Promise<string>;
   requestApprove: (library: any, params: RequestApproveParams) => Promise<any>;
 }
 
 // @todo: define types where any is used
 function web3Utils(rpcMap: Partial<Record<string, string>>): InitUtilsResult {
-  const providers = Object.entries(rpcMap).reduce<Record<string, JsonRpcProvider>>(
+  const providers = Object.entries(rpcMap).reduce<
+    Record<string, JsonRpcProvider>
+  >(
     (acc, [chainId, url]) => ({ ...acc, [chainId]: new JsonRpcProvider(url) }),
     {},
   );
   const erc20 = new Contract('', erc20Abi, Object.values(providers)[0]);
 
-  async function sendCalls(chainId: string, calls: [string, string][]): Promise<any> {
-    const multiCallAddress = MULTI_CALL_ADDRESS[chainId as keyof typeof MULTI_CALL_ADDRESS];
-    if (!providers[chainId] || !multiCallAddress) throw new Error('Invalid chain id');
+  async function sendCalls(
+    chainId: string,
+    calls: [string, string][],
+  ): Promise<any> {
+    const multiCallAddress =
+      MULTI_CALL_ADDRESS[chainId as keyof typeof MULTI_CALL_ADDRESS];
+    if (!providers[chainId] || !multiCallAddress)
+      throw new Error('Invalid chain id');
 
     try {
-      const multiCall = new Contract(multiCallAddress, multiCallAbi, providers[chainId]);
+      const multiCall = new Contract(
+        multiCallAddress,
+        multiCallAbi,
+        providers[chainId],
+      );
 
       // this function should be used only for read-only calls
       return multiCall.tryAggregate?.(false, calls);
@@ -55,22 +74,30 @@ function web3Utils(rpcMap: Partial<Record<string, string>>): InitUtilsResult {
   ): Record<string, MulticallResponse | null> {
     const groupedResponse: Record<string, MulticallResponse | null> = {};
 
-    response.forEach(({ returnData, success }: { returnData: any; success: any }, index: number) => {
-      const token = tokens[index] as Token;
-      const tokenAddress = token.address.toLowerCase();
+    response.forEach(
+      (
+        { returnData, success }: { returnData: any; success: any },
+        index: number,
+      ) => {
+        const token = tokens[index] as Token;
+        const tokenAddress = token.address.toLowerCase();
 
-      if (!success) {
-        groupedResponse[tokenAddress] = null;
-      } else if (returnData === '0x') {
-        groupedResponse[tokenAddress] = { humanAmount: '0', amount: '0' };
-      } else {
-        const balanceInWei: string = defaultAbiCoder.decode([type], returnData)[0];
-        groupedResponse[tokenAddress] = {
-          amount: balanceInWei.toString(),
-          humanAmount: formatUnits(balanceInWei, token.decimals),
-        };
-      }
-    });
+        if (!success) {
+          groupedResponse[tokenAddress] = null;
+        } else if (returnData === '0x') {
+          groupedResponse[tokenAddress] = { humanAmount: '0', amount: '0' };
+        } else {
+          const balanceInWei: string = defaultAbiCoder.decode(
+            [type],
+            returnData,
+          )[0];
+          groupedResponse[tokenAddress] = {
+            amount: balanceInWei.toString(),
+            humanAmount: formatUnits(balanceInWei, token.decimals),
+          };
+        }
+      },
+    );
 
     return groupedResponse;
   }
@@ -80,13 +107,22 @@ function web3Utils(rpcMap: Partial<Record<string, string>>): InitUtilsResult {
     chainId: string,
     tokens: Token[],
   ): Promise<Record<string, MulticallResponse | null>> {
-    const balanceOfCall = erc20.interface.encodeFunctionData('balanceOf', [userAddress]);
+    const balanceOfCall = erc20.interface.encodeFunctionData('balanceOf', [
+      userAddress,
+    ]);
 
-    const calls: [string, string][] = tokens.map((token) => [token.address, balanceOfCall]);
+    const calls: [string, string][] = tokens.map((token) => [
+      token.address,
+      balanceOfCall,
+    ]);
 
     const balancesResponse = await sendCalls(chainId, calls);
 
-    return decodeResponseAndGroupByTokenAddress(balancesResponse, tokens, 'uint256');
+    return decodeResponseAndGroupByTokenAddress(
+      balancesResponse,
+      tokens,
+      'uint256',
+    );
   }
 
   async function getMultipleAllowances(
@@ -95,15 +131,30 @@ function web3Utils(rpcMap: Partial<Record<string, string>>): InitUtilsResult {
     tokens: Token[],
     spender: string,
   ): Promise<Record<string, MulticallResponse | null>> {
-    const allowanceCall = erc20.interface.encodeFunctionData('allowance', [userAddress, spender]);
-    const calls: [string, string][] = tokens.map((token) => [token.address, allowanceCall]);
+    const allowanceCall = erc20.interface.encodeFunctionData('allowance', [
+      userAddress,
+      spender,
+    ]);
+    const calls: [string, string][] = tokens.map((token) => [
+      token.address,
+      allowanceCall,
+    ]);
 
     const allowancesResponse = await sendCalls(chainId, calls);
 
-    return decodeResponseAndGroupByTokenAddress(allowancesResponse, tokens, 'uint256');
+    return decodeResponseAndGroupByTokenAddress(
+      allowancesResponse,
+      tokens,
+      'uint256',
+    );
   }
 
-  async function getAllowance(clientAddress: string, token: string, chainId: number, spender: string): Promise<string> {
+  async function getAllowance(
+    clientAddress: string,
+    token: string,
+    chainId: number,
+    spender: string,
+  ): Promise<string> {
     try {
       const contract = new Contract(token, erc20Abi, providers[chainId]);
 
@@ -113,25 +164,46 @@ function web3Utils(rpcMap: Partial<Record<string, string>>): InitUtilsResult {
     }
   }
 
-  async function requestApprove(library: any, params: RequestApproveParams): Promise<any> {
+  async function requestApprove(
+    library: any,
+    params: RequestApproveParams,
+  ): Promise<any> {
     const { clientAddress, tokenAddress, chainId, amount, spender } = params;
 
     const allowanceAmount = amount ?? UNLIMITED_ALLOWANCE_IN_BASE_UNITS;
-    const data = erc20.interface.encodeFunctionData('approve', [spender, allowanceAmount]);
-    const txParams = { value: '0', data: data, from: clientAddress, to: tokenAddress, chainId };
+    const data = erc20.interface.encodeFunctionData('approve', [
+      spender,
+      allowanceAmount,
+    ]);
+    const txParams = {
+      value: '0',
+      data: data,
+      from: clientAddress,
+      to: tokenAddress,
+      chainId,
+    };
 
     const signer = library.getSigner(clientAddress);
 
     return signer.sendTransaction(txParams);
   }
 
-  return { getMultipleBalances, getMultipleAllowances, getAllowance, requestApprove };
+  return {
+    getMultipleBalances,
+    getMultipleAllowances,
+    getAllowance,
+    requestApprove,
+  };
 }
 
-const rpcMap = Object.keys(CHAINS).reduce<Record<string, string>>((acc, chain) => {
-  acc[chain] = CHAINS[chain as ChainId].rpcUrls[0] as string;
+const rpcMap = Object.keys(CHAINS).reduce<Record<string, string>>(
+  (acc, chain) => {
+    acc[chain] = CHAINS[chain as ChainId].rpcUrls[0] as string;
 
-  return acc;
-}, {});
+    return acc;
+  },
+  {},
+);
 
-export const { getMultipleBalances, getMultipleAllowances, requestApprove } = web3Utils(rpcMap);
+export const { getMultipleBalances, getMultipleAllowances, requestApprove } =
+  web3Utils(rpcMap);

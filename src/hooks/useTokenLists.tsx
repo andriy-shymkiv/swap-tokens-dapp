@@ -11,7 +11,10 @@ const getTokenLists = async (): Promise<Record<ChainId, Token[]>> => {
   tokens.map((token: Token) => {
     if (!tokenListMap[token.chainId]) tokenListMap[token.chainId] = {}; // if no token list for this chainId, create it
     const tokenMap = tokenListMap[token.chainId] as TokenMap; // get token list for this chainId
-    tokenMap[token.address] = { ...token, address: token.address.toLowerCase() }; // add token to tokenListMap
+    tokenMap[token.address] = {
+      ...token,
+      address: token.address.toLowerCase(),
+    }; // add token to tokenListMap
   });
 
   const tokenLists: Record<ChainId, Token[]> = {
@@ -30,8 +33,12 @@ const getTokenLists = async (): Promise<Record<ChainId, Token[]>> => {
 export const constructTokensListQueryKey = (): any[] => ['tokenLists'];
 
 export const useTokenLists = (): UseQueryResult<Record<ChainId, Token[]>> => {
-  return useQuery<Record<ChainId, Token[]>>(constructTokensListQueryKey(), () => getTokenLists(), {
-    staleTime: ONE_HOUR,
-    cacheTime: ONE_HOUR,
-  });
+  return useQuery<Record<ChainId, Token[]>>(
+    constructTokensListQueryKey(),
+    () => getTokenLists(),
+    {
+      staleTime: ONE_HOUR,
+      cacheTime: ONE_HOUR,
+    },
+  );
 };

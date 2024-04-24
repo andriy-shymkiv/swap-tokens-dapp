@@ -7,7 +7,9 @@ interface ReactQueryProviderProps {
   children: ReactNode;
 }
 
-export const ReactQueryProvider = ({ children }: ReactQueryProviderProps): JSX.Element => {
+export const ReactQueryProvider = ({
+  children,
+}: ReactQueryProviderProps): JSX.Element => {
   const queryClient = new QueryClient();
 
   return (

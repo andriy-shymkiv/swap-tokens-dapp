@@ -32,12 +32,24 @@ export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setSelectedChainId: (state: AppState, { payload }: { payload: ChainId }) => {
+    setSelectedChainId: (
+      state: AppState,
+      { payload }: { payload: ChainId },
+    ) => {
       state.selectedChainId = payload;
-      state.youPay = { amount: state.youPay.amount, token: CHAINS[payload].nativeToken };
-      state.youReceive = { amount: state.youReceive.amount, token: USDC_TOKEN[payload] };
+      state.youPay = {
+        amount: state.youPay.amount,
+        token: CHAINS[payload].nativeToken,
+      };
+      state.youReceive = {
+        amount: state.youReceive.amount,
+        token: USDC_TOKEN[payload],
+      };
     },
-    setSelectedWallet: (state: AppState, { payload }: { payload: ConnectionType | undefined }) => {
+    setSelectedWallet: (
+      state: AppState,
+      { payload }: { payload: ConnectionType | undefined },
+    ) => {
       state.selectedWallet = payload;
     },
     setAppScreen: (state: AppState, { payload }: { payload: AppScreen }) => {
@@ -47,8 +59,14 @@ export const appSlice = createSlice({
       if (payload.address === state.youReceive.token.address) {
         // swap tokens in place if they are the same
         const oldYouPayToken = state.youPay.token;
-        state.youPay = { amount: state.youPay.amount, token: state.youReceive.token };
-        state.youReceive = { amount: state.youReceive.amount, token: oldYouPayToken };
+        state.youPay = {
+          amount: state.youPay.amount,
+          token: state.youReceive.token,
+        };
+        state.youReceive = {
+          amount: state.youReceive.amount,
+          token: oldYouPayToken,
+        };
       } else {
         state.youPay = { amount: state.youPay.amount, token: payload };
       }
@@ -59,18 +77,27 @@ export const appSlice = createSlice({
         // swap tokens in place if they are the same
         const oldYouReceiveToken = state.youReceive.token;
         state.youReceive = { amount: state.youReceive.amount, token: payload };
-        state.youPay = { amount: state.youPay.amount, token: oldYouReceiveToken };
+        state.youPay = {
+          amount: state.youPay.amount,
+          token: oldYouReceiveToken,
+        };
       } else {
         state.youReceive = { amount: state.youReceive.amount, token: payload };
       }
     },
-    setYouPayTokenAmount: (state: AppState, { payload }: { payload: string }) => {
+    setYouPayTokenAmount: (
+      state: AppState,
+      { payload }: { payload: string },
+    ) => {
       state.youPay = {
         ...state.youPay,
         amount: payload,
       };
     },
-    setYouReceiveTokenAmount: (state: AppState, { payload }: { payload: string }) => {
+    setYouReceiveTokenAmount: (
+      state: AppState,
+      { payload }: { payload: string },
+    ) => {
       state.youReceive = {
         ...state.youReceive,
         amount: payload,
@@ -78,7 +105,10 @@ export const appSlice = createSlice({
     },
     flipTokens: (state: AppState) => {
       const oldYouPay = state.youPay;
-      state.youPay = { amount: state.youReceive.amount, token: state.youReceive.token };
+      state.youPay = {
+        amount: state.youReceive.amount,
+        token: state.youReceive.token,
+      };
       state.youReceive = { amount: oldYouPay.amount, token: oldYouPay.token };
     },
     resetState: () => initialState,

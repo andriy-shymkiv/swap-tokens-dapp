@@ -59,7 +59,12 @@ export function createSwapper(networkID: number): Swapper {
     partner: string;
   };
 
-  const getRate: Swapper['getRate'] = async ({ srcToken, destToken, srcAmount, partner = DEFAULT_PARTNER }) => {
+  const getRate: Swapper['getRate'] = async ({
+    srcToken,
+    destToken,
+    srcAmount,
+    partner = DEFAULT_PARTNER,
+  }) => {
     const queryParams: PriceQueryParams = {
       srcToken: srcToken.address,
       destToken: destToken.address,

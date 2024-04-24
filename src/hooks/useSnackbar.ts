@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 import { useAppSelector, useAppDispatch } from '~/store/hooks';
-import { SnackbarState, openSnackbar, closeSnackbar } from '~/store/snackbarSlice';
+import {
+  SnackbarState,
+  openSnackbar,
+  closeSnackbar,
+} from '~/store/snackbarSlice';
 
 export const useSnackbar = (): SnackbarState & {
   showSnackbar: (props: Omit<SnackbarState, 'isOpen'>) => void;

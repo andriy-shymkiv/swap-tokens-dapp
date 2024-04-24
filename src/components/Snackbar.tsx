@@ -8,7 +8,11 @@ export const SnackBar = (): JSX.Element => {
 
   return (
     <>
-      <Snackbar open={isOpen} autoHideDuration={SNACKBAR_DURATION} onClose={hideSnackbar}>
+      <Snackbar
+        open={isOpen}
+        autoHideDuration={SNACKBAR_DURATION}
+        onClose={hideSnackbar}
+      >
         <Alert onClose={hideSnackbar} severity={severity}>
           {message}
         </Alert>

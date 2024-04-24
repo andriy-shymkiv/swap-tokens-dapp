@@ -12,8 +12,18 @@ export const ConnectWalletButton: React.FC = (): JSX.Element => {
   }, [dispatch]);
 
   return (
-    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} flexGrow={1}>
-      <PrimaryButton fullWidth variant={'contained'} onClick={onConnectWalletClick}>
+    <Box
+      display={'flex'}
+      flexDirection={'column'}
+      alignItems={'center'}
+      justifyContent={'center'}
+      flexGrow={1}
+    >
+      <PrimaryButton
+        fullWidth
+        variant={'contained'}
+        onClick={onConnectWalletClick}
+      >
         {'connect wallet'}
       </PrimaryButton>
     </Box>

@@ -3,9 +3,13 @@ import { assert } from 'ts-essentials';
 import { AVAILABLE_CONNECTIONS, CONNECTIONS } from './connections';
 import { Connection, ConnectionType } from './types';
 
-export function getAvailableConnection(c: Connector | ConnectionType): Connection {
+export function getAvailableConnection(
+  c: Connector | ConnectionType,
+): Connection {
   if (c instanceof Connector) {
-    const currentActiveConnection = AVAILABLE_CONNECTIONS.find((connection) => connection.connector === c);
+    const currentActiveConnection = AVAILABLE_CONNECTIONS.find(
+      (connection) => connection.connector === c,
+    );
     assert(currentActiveConnection, 'current active connection is not defined');
 
     return currentActiveConnection;

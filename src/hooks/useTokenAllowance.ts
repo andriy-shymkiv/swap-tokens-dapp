@@ -7,9 +7,13 @@ import { ChainId, Token } from '~/walletActions/types';
 import { useTokenLists } from './useTokenLists';
 import { MulticallResponse } from '~/types/utils';
 
-export const constructTokenAllowancesCacheKey = (chainId: ChainId): QueryKey => ['tokensAllowances', chainId];
+export const constructTokenAllowancesCacheKey = (
+  chainId: ChainId,
+): QueryKey => ['tokensAllowances', chainId];
 
-export const useTokenAllowances = (): UseQueryResult<Record<string, MulticallResponse | null>> => {
+export const useTokenAllowances = (): UseQueryResult<
+  Record<string, MulticallResponse | null>
+> => {
   const { selectedChainId } = useAppSelector(({ app }) => app);
   const { account } = useWeb3React();
   const { data: tokensList } = useTokenLists();
@@ -18,7 +22,13 @@ export const useTokenAllowances = (): UseQueryResult<Record<string, MulticallRes
 
   return useQuery(
     constructTokenAllowancesCacheKey(selectedChainId),
-    () => getMultipleAllowances(account ?? '', selectedChainId, tokens, SWAP_SPENDER),
+    () =>
+      getMultipleAllowances(
+        account ?? '',
+        selectedChainId,
+        tokens,
+        SWAP_SPENDER,
+      ),
     {
       enabled: !!account?.length && !!tokens?.length,
       cacheTime: ONE_MINUTE,

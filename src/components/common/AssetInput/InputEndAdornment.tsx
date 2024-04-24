@@ -26,7 +26,10 @@ type InputEndAdornmentProps = {
   onClick: () => void;
 };
 
-export const InputEndAdornment: React.FC<InputEndAdornmentProps> = ({ token, onClick }) => {
+export const InputEndAdornment: React.FC<InputEndAdornmentProps> = ({
+  token,
+  onClick,
+}) => {
   return (
     <StyledSelectTokenButton variant={'contained'} fullWidth onClick={onClick}>
       <Box display={'flex'} alignItems={'center'} gap={1}>

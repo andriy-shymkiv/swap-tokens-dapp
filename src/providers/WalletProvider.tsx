@@ -8,8 +8,12 @@ interface WalletProviderProps {
   children: ReactNode;
 }
 
-export const WalletProvider = ({ children }: WalletProviderProps): JSX.Element => {
+export const WalletProvider = ({
+  children,
+}: WalletProviderProps): JSX.Element => {
   useEagerlyConnect();
 
-  return <Web3ReactProvider connectors={CONNECTORS}>{children}</Web3ReactProvider>;
+  return (
+    <Web3ReactProvider connectors={CONNECTORS}>{children}</Web3ReactProvider>
+  );
 };
