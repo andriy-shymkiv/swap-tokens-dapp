@@ -9,6 +9,7 @@ import { store } from './store';
 import '~/styles/index.css';
 import { theme } from './theme';
 import { SnackBar } from './components/Snackbar';
+import { UniswapComponent } from './UniswapComponent';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -16,7 +17,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ReactQueryProvider>
         <WalletProvider>
           <ThemeProvider theme={theme}>
-            <App />
+            {/* <App /> */}
+            <UniswapComponent />
             <SnackBar />
           </ThemeProvider>
         </WalletProvider>

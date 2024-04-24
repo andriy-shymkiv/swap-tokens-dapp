@@ -1,11 +1,11 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { fetchTokenList } from '~/api/tokens';
 import { TokenListMap, TokenMap } from '~/types/tokens';
 import { ONE_HOUR } from '~/utils/constants';
 import { ChainId, Token } from '~/walletActions/types';
+import tokenList from '~/data/token-list.json';
 
 const getTokenLists = async (): Promise<Record<ChainId, Token[]>> => {
-  const tokens = await fetchTokenList();
+  const tokens = tokenList.tokens as Token[];
   const tokenListMap: TokenListMap = {};
 
   tokens.map((token: Token) => {

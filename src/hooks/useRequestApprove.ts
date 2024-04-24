@@ -47,7 +47,9 @@ export const useRequestApprove = (): UseMutationResult<
     onSuccess: (tx) => {
       // @todo: wait for tx and invalidate allowances
       showSnackbar({
-        message: `Approve transaction sent with hash ${getEllipsisString(tx.hash)}`,
+        message: `Approve transaction sent with hash ${getEllipsisString(
+          tx.hash,
+        )}`,
         severity: 'success',
       });
     },

@@ -1,4 +1,4 @@
-import { JsonRpcProvider, Contract } from 'ethers';
+import { Contract, providers as ethersProviders } from 'ethers';
 import { Token } from '~/types/tokens';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { formatUnits } from '@ethersproject/units';
@@ -11,6 +11,7 @@ import {
   MULTI_CALL_ADDRESS,
   UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
 } from './constants';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 interface InitUtilsResult {
   getMultipleBalances: (
@@ -38,7 +39,10 @@ function web3Utils(rpcMap: Partial<Record<string, string>>): InitUtilsResult {
   const providers = Object.entries(rpcMap).reduce<
     Record<string, JsonRpcProvider>
   >(
-    (acc, [chainId, url]) => ({ ...acc, [chainId]: new JsonRpcProvider(url) }),
+    (acc, [chainId, url]) => ({
+      ...acc,
+      [chainId]: new ethersProviders.JsonRpcProvider(url),
+    }),
     {},
   );
   const erc20 = new Contract('', erc20Abi, Object.values(providers)[0]);
