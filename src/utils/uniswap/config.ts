@@ -14,6 +14,7 @@ interface ExampleConfig {
   rpc: {
     local: string;
     mainnet: string;
+    polygon: string;
   };
   wallet: {
     privateKey: string;
@@ -37,6 +38,7 @@ export const CurrentConfig: ExampleConfig = {
   rpc: {
     local: 'http://localhost:8545',
     mainnet: `https://eth.llamarpc.com/ACQBZIJPN9I5JS5F9NVN9518215S429XGH`,
+    polygon: 'https://polygon-mainnet.public.blastapi.io',
   },
   tokens: {
     in: USDC_TOKEN,

@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getQuote } from './utils/uniswap/quote';
-import { CurrentConfig } from './utils/uniswap/config';
-import { PoolInfo, getPoolInfo } from './utils/uniswap/pool';
-import { createTrade, executeTrade } from './utils/uniswap/trading';
+import { getQuote } from '../quote';
+import { CurrentConfig } from '../config';
+import { PoolInfo, getPoolInfo } from '../pool';
+import { createTrade, executeTrade } from '../trading';
 import { useWeb3React } from '@web3-react/core';
-import {
-  connectBrowserExtensionWallet,
-  getWalletAddress,
-} from './utils/uniswap/provider';
+import { connectBrowserExtensionWallet, getWalletAddress } from '../provider';
 
 export const UniswapComponent = (): JSX.Element => {
   const [outputAmount, setOutputAmount] = useState<string>();
