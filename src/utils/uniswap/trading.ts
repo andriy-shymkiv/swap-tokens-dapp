@@ -41,7 +41,13 @@ export async function createTrade(
   poolFee: FeeAmount,
   tokenAAmount: number,
 ): Promise<TokenTrade> {
-  const poolInfo = await getPoolInfo(tokenA, tokenB, poolFee);
+  console.log('creating trade...', { tokenA, tokenB, poolFee, tokenAAmount });
+  try {
+    const poolInfo = await getPoolInfo(tokenA, tokenB, poolFee);
+    console.log({ poolInfo });
+  } catch (error) {
+    console.log('Error getting pool info:', error);
+  }
 
   const pool = new Pool(
     tokenA,
@@ -51,11 +57,11 @@ export async function createTrade(
     poolInfo.liquidity.toString(),
     poolInfo.tick,
   );
-
+  console.log({ pool });
   const swapRoute = new Route([pool], tokenA, tokenB);
-
+  console.log({ swapRoute });
   const amountOut = await getOutputQuote(swapRoute, tokenA, tokenAAmount);
-
+  console.log({ amountOut });
   const uncheckedTrade = Trade.createUncheckedTrade({
     route: swapRoute,
     inputAmount: CurrencyAmount.fromRawAmount(
@@ -65,6 +71,7 @@ export async function createTrade(
     outputAmount: CurrencyAmount.fromRawAmount(tokenB, JSBI.BigInt(amountOut)),
     tradeType: TradeType.EXACT_INPUT,
   });
+  console.log('unchecked trade created:', { uncheckedTrade });
 
   return uncheckedTrade;
 }
@@ -73,25 +80,25 @@ export async function executeTrade(
   trade: TokenTrade,
   tokenA: Token,
 ): Promise<TransactionState> {
+  console.log('executing trade...');
   const walletAddress = getWalletAddress();
   const provider = getProvider();
-  console.log({ walletAddress, provider });
 
   if (!walletAddress || !provider) {
     throw new Error('Cannot execute a trade without a connected wallet');
   }
 
-  // // Give approval to the router to spend the token
-  // const tokenApproval = await getTokenTransferApproval(
-  //   tokenA,
-  //   walletAddress,
-  //   provider,
-  // );
+  // Give approval to the router to spend the token
+  const tokenApproval = await getTokenTransferApproval(
+    tokenA,
+    // walletAddress,
+    // provider,
+  );
 
-  // // Fail if transfer approvals do not go through
-  // if (tokenApproval !== TransactionState.Sent) {
-  //   return TransactionState.Failed;
-  // }
+  // Fail if transfer approvals do not go through
+  if (tokenApproval !== TransactionState.Sent) {
+    return TransactionState.Failed;
+  }
 
   const options: SwapOptions = {
     slippageTolerance: new Percent(50, 10_000), // 50 bips, or 0.50%
@@ -108,8 +115,9 @@ export async function executeTrade(
     from: walletAddress,
     maxFeePerGas: MAX_FEE_PER_GAS,
     maxPriorityFeePerGas: MAX_PRIORITY_FEE_PER_GAS,
+    gasLimit: 300000,
   };
-
+  console.log({ tx });
   const res = await sendTransaction(tx);
 
   return res;

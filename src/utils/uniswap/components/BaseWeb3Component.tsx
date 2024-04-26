@@ -9,20 +9,19 @@ import {
   useMultipleBalances,
 } from '../hooks/useTokenBalance';
 import { CHAINS } from '../../../walletActions/chains';
+import { createTrade, executeTrade } from '../trading';
+import { CurrentConfig } from '../config';
+import { connectBrowserExtensionWallet } from '../provider';
 
-async function connectBrowserExtensionWallet(): Promise<string | null> {
+async function connectInjectedWallet(): Promise<string | null> {
   if (!window.ethereum) {
     return null;
   }
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const accounts = await provider.send('eth_requestAccounts', []);
+  const accounts: string[] = await provider.send('eth_requestAccounts', []);
 
-  if (accounts.length !== 1) {
-    return null;
-  }
-
-  return accounts[0];
+  return accounts[0] ? accounts[0] : null;
 }
 
 function getProvider(chainId: ChainId): ethers.providers.JsonRpcProvider {
@@ -35,17 +34,23 @@ function getProvider(chainId: ChainId): ethers.providers.JsonRpcProvider {
 
 export const BaseWeb3Component = (): JSX.Element => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const chainId = ChainId.POLYGON;
+
+  const chainId = ChainId.OPTIMISM;
+  const tokenIn = CurrentConfig.tokens.in;
+  const tokenOut = CurrentConfig.tokens.out;
+  const poolFee = CurrentConfig.tokens.poolFee;
+  const amountIn = CurrentConfig.tokens.amountIn;
 
   const onClick = async (): Promise<void> => {
-    const provider = getProvider(chainId);
-
-    const signer = provider.getSigner();
-    console.log(signer, '<- signer');
-
     if (!walletAddress) {
-      throw new Error('no wallet address onCLick');
+      // throw new Error('no wallet address onCLick');
     }
+
+    const trade = await createTrade(tokenIn, tokenOut, poolFee, amountIn);
+
+    console.log({ trade });
+
+    await executeTrade(trade, CurrentConfig.tokens.in);
   };
 
   const getTokenBalance = useGetTokenBalance();
@@ -64,6 +69,7 @@ export const BaseWeb3Component = (): JSX.Element => {
       account: walletAddress,
       provider,
     });
+
     const nativeBalance = await getNativeTokenBalance(provider, walletAddress);
 
     const multipleBalances = await getMultipleBalances(
@@ -88,7 +94,8 @@ export const BaseWeb3Component = (): JSX.Element => {
       <button
         style={{ display: 'block' }}
         onClick={async () => {
-          const wallet = await connectBrowserExtensionWallet();
+          const wallet = await connectInjectedWallet();
+          await connectBrowserExtensionWallet();
           setWalletAddress(wallet);
         }}
         disabled={!!walletAddress}
@@ -101,10 +108,18 @@ export const BaseWeb3Component = (): JSX.Element => {
           : 'Connect Metamask'}
       </button>
 
+      <ul>
+        <li>chainId: {chainId}</li>
+        <li>tokenIn: {tokenIn.symbol}</li>
+        <li>tokenOut: {tokenOut.symbol}</li>
+        <li>poolFee: {poolFee}</li>
+        <li>amountIn: {amountIn}</li>
+      </ul>
+
       <button
         style={{ display: 'block' }}
         onClick={onClick}
-        disabled={!walletAddress}
+        // disabled={!walletAddress}
       >
         sign
       </button>

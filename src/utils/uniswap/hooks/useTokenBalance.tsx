@@ -63,7 +63,7 @@ export function useMultipleBalances() {
       account: string,
       tokens: { address: string; decimals: number }[],
     ) => {
-      const calls = tokens.map(({ address }) => {
+      const aggregateCalls = tokens.map(({ address }) => {
         return {
           target: address,
           callData: new ethers.utils.Interface([
@@ -71,7 +71,7 @@ export function useMultipleBalances() {
           ]).encodeFunctionData('balanceOf', [account]),
         };
       });
-
+      console.log({ calls: aggregateCalls });
       const multicall = new ethers.Contract(
         UNISWAP_MULTICALL_ADDRESS_POLYGON,
         [
@@ -80,7 +80,7 @@ export function useMultipleBalances() {
         provider,
       );
 
-      const [, response] = await multicall.aggregate(calls);
+      const [, response] = await multicall.aggregate(aggregateCalls);
       console.log({ response });
 
       const balances = (response as string[]).map((response, i) => {

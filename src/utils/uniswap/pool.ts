@@ -39,15 +39,19 @@ export async function getPoolInfo(
     provider,
   );
 
-  const [token0, token1, fee, tickSpacing, liquidity, slot0] =
-    await Promise.all([
-      poolContract.token0(),
-      poolContract.token1(),
-      poolContract.fee(),
-      poolContract.tickSpacing(),
-      poolContract.liquidity(),
-      poolContract.slot0(),
-    ]);
+  try {
+    const [token0, token1, fee, tickSpacing, liquidity, slot0] =
+      await Promise.all([
+        poolContract.token0(),
+        poolContract.token1(),
+        poolContract.fee(),
+        poolContract.tickSpacing(),
+        poolContract.liquidity(),
+        poolContract.slot0(),
+      ]);
+  } catch (error) {
+    console.log
+  }
 
   return {
     token0,

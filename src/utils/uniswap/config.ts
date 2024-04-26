@@ -1,11 +1,9 @@
 import { Token } from '@uniswap/sdk-core';
 import { FeeAmount } from '@uniswap/v3-sdk';
-import { USDC_TOKEN, WETH_TOKEN } from './constants';
+import { USDC_TOKEN, DAI_TOKEN } from './constants';
 
 // Sets if the example should run locally or on chain
 export enum Environment {
-  LOCAL,
-  MAINNET,
   WALLET_EXTENSION,
 }
 
@@ -32,8 +30,7 @@ export const CurrentConfig: ExampleConfig = {
   env: Environment.WALLET_EXTENSION,
   wallet: {
     address: '',
-    privateKey:
-      '',
+    privateKey: '',
   },
   rpc: {
     local: 'http://localhost:8545',
@@ -41,9 +38,9 @@ export const CurrentConfig: ExampleConfig = {
     polygon: 'https://polygon-mainnet.public.blastapi.io',
   },
   tokens: {
-    in: USDC_TOKEN,
-    amountIn: 1000,
-    out: WETH_TOKEN,
+    in: DAI_TOKEN,
+    amountIn: 0.2,
+    out: USDC_TOKEN,
     poolFee: FeeAmount.MEDIUM,
   },
 };
