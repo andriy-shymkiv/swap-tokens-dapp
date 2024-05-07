@@ -6,11 +6,6 @@ import { CHAINS, URLS } from '~/walletActions/chains';
 import { CONNECTIONS } from '~/walletActions/connections';
 import { ChainId, ConnectionType } from '~/walletActions/types';
 
-export const useIsNetworkSupported = (): boolean => {
-  const { chainId } = useWeb3React();
-  return isSupportedChain(chainId as unknown as ChainId);
-};
-
 type SwitchNetwork = (chainId: ChainId) => Promise<void>;
 
 export const useSwitchNetwork = (): SwitchNetwork => {
