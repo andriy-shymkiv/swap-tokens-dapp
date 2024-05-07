@@ -1,19 +1,19 @@
 import { UseMutationResult, useMutation } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { assert } from 'ts-essentials';
-import { useGetSwapTransaction } from './useGetSwapTransaction';
+import { useGetSwapTransactionParaswap } from './useGetSwapTransactionParaswap';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useSnackbar } from './useSnackbar';
 import { getEllipsisString, isUserRejectedTx } from '~/helpers/utils';
 import {} from '@uniswap/v3-sdk';
 
-export const useCreateSwap = (): UseMutationResult<
+export const useCreateSwapParaswap = (): UseMutationResult<
   TransactionResponse,
   unknown,
   void
 > => {
   const { chainId, account, provider } = useWeb3React();
-  const { mutateAsync: getTransaction } = useGetSwapTransaction();
+  const { mutateAsync: getTransaction } = useGetSwapTransactionParaswap();
   const { showSnackbar } = useSnackbar();
 
   const createSwap = async (): Promise<TransactionResponse> => {
@@ -30,7 +30,7 @@ export const useCreateSwap = (): UseMutationResult<
     });
   };
 
-  return useMutation(['useCreateSwap'], createSwap, {
+  return useMutation(['useCreateSwapParaswap'], createSwap, {
     onError: (error) => {
       showSnackbar({
         message: isUserRejectedTx(error)

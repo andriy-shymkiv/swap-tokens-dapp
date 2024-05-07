@@ -21,7 +21,7 @@ import { PrimaryButton } from './common/PrimaryButton';
 import { SelectChain } from './SelectChain';
 import { useSwapCondition } from '~/hooks/useSwapCondition';
 import { useRequestApprove } from '~/hooks/useRequestApprove';
-import { useCreateSwap } from '~/hooks/useCreateSwap';
+import { useCreateSwapParaswap } from '~/hooks/useCreateSwapParaswap';
 
 const StyledDisconnectButton = styled(Button, {
   name: 'StyledDisconnectButton',
@@ -37,7 +37,7 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const { mutate: requestApprove, isLoading: isRequestApproveLoading } =
     useRequestApprove();
   const { mutate: createSwap, isLoading: isCreateSwapLoading } =
-    useCreateSwap();
+    useCreateSwapParaswap();
 
   const handleDisconnect = useCallback(() => {
     if (connector.deactivate) connector.deactivate();
@@ -63,8 +63,8 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
   const buttonLabel = !isEnoughBalance
     ? 'Insufficient balance'
     : !isEnoughAllowance
-      ? 'Unlock'
-      : 'Swap';
+    ? 'Unlock'
+    : 'Swap';
   const isButtonDisabled =
     !account ||
     !isEnoughBalance ||
@@ -81,9 +81,9 @@ export const SwapTokensScreen: React.FC = (): JSX.Element => {
         alignItems={'center'}
         gap={2}
       >
-        <Typography
-          variant={'body1'}
-        >{`Connected to ${getEllipsisString(account)}`}</Typography>
+        <Typography variant={'body1'}>{`Connected to ${getEllipsisString(
+          account,
+        )}`}</Typography>
         <StyledDisconnectButton
           variant={'contained'}
           onClick={handleDisconnect}

@@ -12,7 +12,7 @@ import { assert } from 'ts-essentials';
 import { useCallback } from 'react';
 import { useSnackbar } from './useSnackbar';
 
-export const useGetSwapTransaction = (): UseMutationResult<
+export const useGetSwapTransactionParaswap = (): UseMutationResult<
   TransactionParams,
   unknown,
   void
@@ -63,7 +63,7 @@ export const useGetSwapTransaction = (): UseMutationResult<
       return transactionRequest;
     }, [account, chainId, youPay, youReceive]);
 
-  return useMutation(['getSwapTransaction'], getSwapTransaction, {
+  return useMutation(['useGetSwapTransactionParaswap'], getSwapTransaction, {
     onError: () => {
       showSnackbar({
         message: 'Error building swap transaction',
